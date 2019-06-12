@@ -1,10 +1,10 @@
 <template>
   <div>
-    <nav class="navbar has-shadow is-fixed-top">
+    <nav class="navbar has-shadow">
       <div class="container">
         <div class="navbar-brand">
           <router-link class="navbar-item is-size-4 has-text-weight-bold has-text-black" :to="'/'">
-            CLIENT
+            林肯华人基督教会
           </router-link>
           <div class="navbar-burger burger app-burger" :class="{'is-active': menuActive}"
             @click="menuActive = !menuActive">
@@ -16,13 +16,16 @@
         <div class="navbar-menu" :class="{'is-active': menuActive}">
           <div class="navbar-start">
             <a class="navbar-item">
-              {{token ? 'User' : 'About'}}
+              关于我们 About Us
+            </a>
+            <a class="navbar-item">
+              同工 Coworkers
+            </a>
+            <a class="navbar-item">
+              文件 Files
             </a>
           </div>
           <div class="navbar-end">
-            <router-link class="navbar-item" :to="'/docs'">
-              Docs
-            </router-link>
             <div class="navbar-item">
               <div class="field is-grouped">
                 <p class="control">

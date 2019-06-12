@@ -8,6 +8,8 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 
 import 'vue-awesome/icons/sign-in-alt'
+import 'vue-awesome/icons/angle-left'
+import 'vue-awesome/icons/angle-right'
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('v-icon', Icon)
 
