@@ -1,0 +1,27 @@
+name: admin
+version: 0.1.0
+
+authors:
+  - Hengle Jiang <jianghengle@gmail.com>
+
+targets:
+  admin:
+    main: src/admin.cr
+
+crystal: 0.27.0
+
+license: MIT
+
+dependencies:
+  crecto-admin:
+    github: jianghengle/crecto-admin
+    branch: master
+
+  pg:
+    github: will/crystal-pg
+
+  mysql:
+    github: crystal-lang/crystal-mysql
+
+  micrate:
+    github: amberframework/micrate
