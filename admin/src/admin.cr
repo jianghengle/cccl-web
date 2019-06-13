@@ -36,18 +36,18 @@ end
 
 class Block < Crecto::Model
   schema "blocks" do
-    field :type, String
+    field :category, String
     field :name, String
     field :time, Time
     field :content, String
   end
 
   def self.collection_attributes
-    return [:type, :name, :time, :created_at, :updated_at]
+    return [:category, :name, :time, :created_at, :updated_at]
   end
 
   def self.form_attributes
-    [{:type, "enum", ["Normal", "Schedule"]},
+    [{:category, "enum", ["Normal", "Schedule"]},
      {:name, "string"},
      :time,
      {:content, "text"}]
