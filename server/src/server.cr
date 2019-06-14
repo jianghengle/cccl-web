@@ -38,6 +38,10 @@ module MyServer
         HttpAPI::BlockController.get_block_by_name(env)
       end
 
+      post "/update_block" do |env|
+        HttpAPI::BlockController.update_block(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       Kemal.run

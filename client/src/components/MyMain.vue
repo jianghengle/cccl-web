@@ -10,25 +10,31 @@
             <v-icon class="icon has-text-grey-lighter" name="angle-right"/>
           </a>
           <div>
-            slide
+            
           </div>
         </div>
       </div>
     </div>
-    <div class="container">
-      text block{{windowWidth}},{{slideWidth}}
+    <div class="container welcome-block" v-if="welcomeBlock">
+      <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
     </div>
   </div>
 </template>
 
 <script>
+import Block from './Block'
 
 export default {
   name: 'my-main',
+  components: {
+    Block
+  },
   data () {
     return {
       windowWidth: 0,
-      slideWidth: 0
+      slideWidth: 0,
+      welcomeBlock: null,
+      scheduleBlocks: []
     }
   },
   computed: {
@@ -43,12 +49,24 @@ export default {
     handleResize () {
       this.windowWidth = window.innerWidth
       this.slideWidth = document.getElementById('slides-container').offsetWidth
+    },
+    requestWelcomeBlock () {
+      this.$http.post(xHTTPx + '/get_block_by_name', {name: 'Welcome!'}).then(response => {
+        this.welcomeBlock = response.body
+      }, response => {
+        this.error = 'Failed to get block!'
+      })
+    },
+    welcomeBlockChanged (obj) {
+      this.welcomeBlock.content = obj.content
     }
   },
   mounted () {
     this.windowWidth = window.innerWidth
     this.slideWidth = document.getElementById('slides-container').offsetWidth
     window.addEventListener('resize', this.handleResize)
+
+    this.requestWelcomeBlock()
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handleResize)
@@ -77,6 +95,13 @@ export default {
     right: 0px;
     cursor: pointer;
   }
+}
+
+.welcome-block {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 </style>

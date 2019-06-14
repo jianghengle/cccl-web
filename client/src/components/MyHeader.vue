@@ -15,12 +15,12 @@
         </div>
         <div class="navbar-menu" :class="{'is-active': menuActive}">
           <div class="navbar-start">
-            <a class="navbar-item">
+            <router-link class="navbar-item" :to="'/about'">
               关于我们 About Us
-            </a>
-            <a class="navbar-item">
+            </router-link>
+            <router-link class="navbar-item" :to="'/coworkers'">
               同工 Coworkers
-            </a>
+            </router-link>
             <a class="navbar-item">
               文件 Files
             </a>
@@ -28,9 +28,14 @@
           <div class="navbar-end">
             <div class="navbar-item">
               <div class="field is-grouped">
-                <p class="control">
-                  <a class="button">
-                    <v-icon name="sign-in-alt"/>&nbsp;Sign In
+                <p class="control" v-if="!token">
+                  <a class="button" @click="login">
+                    <v-icon name="sign-in-alt"/>&nbsp;Login
+                  </a>
+                </p>
+                <p class="control" v-if="token">
+                  <a class="button" @click="logout">
+                    <v-icon name="sign-out-alt"/>&nbsp;Logout
                   </a>
                 </p>
               </div>
@@ -43,6 +48,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 export default {
   name: 'my-header',
   data () {
@@ -53,6 +60,33 @@ export default {
   computed: {
     token () {
       return this.$store.state.user.token
+    }
+  },
+  methods: {
+    login () {
+      this.$store.commit('modals/openLoginModal')
+    },
+    logout () {
+      var confirm = {
+        title: 'Logout',
+        message: 'Are you sure to logout?',
+        button: 'Yes, I am sure.',
+        callback: {
+          context: this,
+          method: this.logoutConfirmed,
+          args: []
+        }
+      }
+      this.$store.commit('modals/openConfirmModal', confirm)
+    },
+    logoutConfirmed () {
+      delete Vue.http.headers.common['Authorization']
+      this.$store.commit('user/reset')
+    }
+  },
+  mounted () {
+    if(this.token) {
+      Vue.http.headers.common['Authorization'] = this.token
     }
   }
 }

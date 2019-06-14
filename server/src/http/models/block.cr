@@ -21,9 +21,20 @@ module MyServer
       end
 
       def self.get_by_name(name : String)
-        block = Repo.get_by(Block, name: name)
+        block = Repo.get_by(Block, name: name, category: "Normal")
         raise "Cannot find block" if block.nil?
         block
+      end
+
+      def self.update(id, name, time, content)
+        block = Repo.get(Block, id)
+        raise "Cannot find block" if block.nil?
+
+        block.name = name
+        block.content = content
+        block.time = Time.unix(time)
+        changeset = Repo.update(block)
+        raise changeset.errors.to_s unless changeset.valid?
       end
     end
   end

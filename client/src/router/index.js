@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MyMain from '@/components/MyMain'
-import Docs from '@/components/Docs'
+import About from '@/components/About'
+import Coworkers from '@/components/Coworkers'
 
 Vue.use(Router)
 
@@ -13,9 +14,14 @@ export default new Router({
       component: MyMain
     },
     {
-      path: '/docs',
-      name: 'Docs',
-      component: Docs
+      path: '/about',
+      name: 'About',
+      component: About
+    },
+    {
+      path: '/coworkers',
+      name: 'Coworkers',
+      component: Coworkers
     },
   ]
 })
