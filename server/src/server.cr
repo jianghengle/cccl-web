@@ -42,6 +42,22 @@ module MyServer
         HttpAPI::BlockController.update_block(env)
       end
 
+      post "/delete_block" do |env|
+        HttpAPI::BlockController.delete_block(env)
+      end
+
+      post "/add_schedule_block" do |env|
+        HttpAPI::BlockController.add_schedule_block(env)
+      end
+
+      get "/get_schedule_blocks" do |env|
+        HttpAPI::BlockController.get_schedule_blocks(env)
+      end
+
+      get "/get_recent_schedule_blocks" do |env|
+        HttpAPI::BlockController.get_recent_schedule_blocks(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       Kemal.run

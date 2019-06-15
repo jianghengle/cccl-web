@@ -34,14 +34,10 @@ export default {
   mounted () {
     this.$http.post(xHTTPx + '/get_block_by_name', {name: 'About Us'}).then(response => {
       this.aboutBlock = response.body
-    }, response => {
-      this.error = 'Failed to get block!'
     })
 
     this.$http.post(xHTTPx + '/get_block_by_name', {name: 'Contact Us'}).then(response => {
       this.contactBlock = response.body
-    }, response => {
-      this.error = 'Failed to get block!'
     })
   }
 }

@@ -18,6 +18,17 @@
     <div class="container welcome-block" v-if="welcomeBlock">
       <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
     </div>
+    <div class="container schedule-blocks">
+      <div class="columns is-multiline">
+        <div v-for="s in scheduleBlocks" class="column is-half">
+          <div class="card">
+            <div class="card-content">
+              <block :blockObj="s" :editable="false" :inTable="false"></block>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -53,13 +64,18 @@ export default {
     requestWelcomeBlock () {
       this.$http.post(xHTTPx + '/get_block_by_name', {name: 'Welcome!'}).then(response => {
         this.welcomeBlock = response.body
-      }, response => {
-        this.error = 'Failed to get block!'
       })
     },
     welcomeBlockChanged (obj) {
       this.welcomeBlock.content = obj.content
-    }
+    },
+    requestRecentSchedule () {
+      this.$http.get(xHTTPx + '/get_recent_schedule_blocks').then(response => {
+        this.scheduleBlocks = response.body.sort(function(a, b){
+          return a.time - b.time
+        })
+      })
+    },
   },
   mounted () {
     this.windowWidth = window.innerWidth
@@ -67,6 +83,7 @@ export default {
     window.addEventListener('resize', this.handleResize)
 
     this.requestWelcomeBlock()
+    this.requestRecentSchedule()
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handleResize)
@@ -100,6 +117,13 @@ export default {
 .welcome-block {
   margin-top: 20px;
   margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.schedule-blocks {
+  margin-top: 100px;
+  margin-bottom: 50px;
   padding-left: 10px;
   padding-right: 10px;
 }
