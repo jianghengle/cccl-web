@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <my-header></my-header>
-    <div>
+    <div class="my-body">
       <router-view></router-view>
     </div>
     <my-footer></my-footer>
 
     <confirm-modal></confirm-modal>
     <login-modal></login-modal>
+    <new-file-modal></new-file-modal>
   </div>
 </template>
 
@@ -16,6 +17,7 @@ import MyHeader from './components/MyHeader'
 import MyFooter from './components/MyFooter'
 import ConfirmModal from './components/modals/ConfirmModal'
 import LoginModal from './components/modals/LoginModal'
+import NewFileModal from './components/modals/NewFileModal'
 
 export default {
   name: 'App',
@@ -24,6 +26,7 @@ export default {
     MyFooter,
     ConfirmModal,
     LoginModal,
+    NewFileModal
   }
 }
 </script>
@@ -32,6 +35,10 @@ export default {
 @import "~bulma/sass/utilities/initial-variables";
 $navbar-height: 84px;
 @import "~bulma";
+
+.my-body {
+  min-height: 500px;
+}
 
 .date-picker-wrapper {
   display: inline-block;

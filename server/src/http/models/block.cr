@@ -42,7 +42,7 @@ module MyServer
         now = Time.utc_now
         blocks.select do |b|
           span = b.time.as(Time) - now
-          span.days > -1 && span.days < 7
+          span.total_days > -0.5 && span.total_days < 7
         end
       end
 

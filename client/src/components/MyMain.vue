@@ -19,6 +19,7 @@
       <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
     </div>
     <div class="container schedule-blocks">
+      <h5 class="title is-5">最近的服侍安排：</h5>
       <div class="columns is-multiline">
         <div v-for="s in scheduleBlocks" class="column is-half">
           <div class="card">

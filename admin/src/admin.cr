@@ -59,6 +59,20 @@ class Block < Crecto::Model
   end
 end
 
+class MyFile < Crecto::Model
+  schema "files" do
+    field :name, String
+    field :file_type, String
+    field :url, String
+    field :info, String
+  end
+
+  def self.can_access(user)
+    return false unless user.is_a? User
+    user.role.to_s == "Admin"
+  end
+end
+
 CrectoAdmin.config do |config|
   config.auth_enabled = true
   config.auth = CrectoAdmin::DatabaseAuth
@@ -73,6 +87,7 @@ init_admin()
 
 admin_resource(User, Repo)
 admin_resource(Block, Repo)
+admin_resource(MyFile, Repo)
 
 Kemal::Session.config do |config|
   config.secret = "sTHxjX3R"

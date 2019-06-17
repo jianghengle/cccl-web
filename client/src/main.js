@@ -13,8 +13,10 @@ import 'vue-awesome/icons/angle-left'
 import 'vue-awesome/icons/angle-right'
 import 'vue-awesome/icons/chevron-up'
 import 'vue-awesome/icons/chevron-down'
-import 'vue-awesome/icons/times'
+import 'vue-awesome/icons/chevron-left'
+import 'vue-awesome/icons/spinner'
 import 'vue-awesome/icons/edit'
+import 'vue-awesome/icons/upload'
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('v-icon', Icon)
 

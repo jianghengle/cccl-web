@@ -10,6 +10,10 @@ export const state = {
   loginModal: {
     opened: false
   },
+  newFileModal: {
+    opened: false,
+    callback: null
+  },
 }
 
 // mutations
@@ -37,6 +41,16 @@ export const mutations = {
 
   closeLoginModal (state) {
     state.loginModal.opened = false
+  },
+
+  openNewFileModal (state, context) {
+    state.newFileModal.callback = context.callback
+    state.newFileModal.opened = true
+  },
+
+  closeNewFileModal (state) {
+    state.newFileModal.opened = false
+    state.newFileModal.callback = null
   },
 }
 

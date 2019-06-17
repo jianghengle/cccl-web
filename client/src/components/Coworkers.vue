@@ -5,9 +5,9 @@
       <div class="schedule-table">
         <table class="table is-fullwidth">
           <tbody>
-            <tr v-for="s in schedule" :key="s.id">
+            <tr v-for="s in schedule" :key="s.id" :class="{'clickable-row': !s.open}" @click="s.open = true">
               <td>
-                <a class="button is-white is-small up-down-button" @click="s.open = !s.open">
+                <a class="button is-white is-small up-down-button" @click.stop="s.open = !s.open">
                   <v-icon v-if="s.open" class="icon has-text-grey-light" name="chevron-up"/>
                   <v-icon v-if="!s.open" class="icon has-text-grey-light" name="chevron-down"/>
                 </a>
@@ -207,6 +207,14 @@ export default {
 
 .up-down-button {
   float: right;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: hsl(0, 0%, 98%);
 }
 
 </style>
