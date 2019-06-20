@@ -26,7 +26,12 @@ export default new Router({
       component: Coworkers
     },
     {
-      path: '/files/:category',
+      path: '/files',
+      name: 'RootFiles',
+      component: Files
+    },
+    {
+      path: '/files/:path',
       name: 'Files',
       component: Files
     },

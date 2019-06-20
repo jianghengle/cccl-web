@@ -6,6 +6,7 @@ module MyServer
         field :file_type, String
         field :url, String
         field :info, String
+        field :path, String
       end
 
       def to_json
@@ -15,14 +16,21 @@ module MyServer
           str << "\"name\":" << @name.to_json << ","
           str << "\"fileType\":" << @file_type.to_json << ","
           str << "\"url\":" << @url.to_json << ","
+          str << "\"path\":" << @path.to_json << ","
           str << "\"info\":" << @info.to_json
           str << "}"
         end
         result
       end
 
-      def self.get_files
-        items = Repo.all(MyFile)
+      def self.get_files(path)
+        if path.empty?
+          query = Query.where(path: nil)
+        else
+          query = Query.where(path: path)
+        end
+        items = Repo.all(MyFile, query)
+        p items.size
         return items.as(Array) unless items.nil?
         [] of MyFile
       end

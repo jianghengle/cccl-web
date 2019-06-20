@@ -8,7 +8,8 @@ module MyServer
 
       def get_files(ctx)
         begin
-          items = MyFile.get_files
+          path = get_param!(ctx, "path")
+          items = MyFile.get_files(path)
           arr = [] of String
           "[" + (items.join(", ") { |i| i.to_json }) + "]"
         rescue ex : InsufficientParameters

@@ -27,6 +27,18 @@ export default {
     ConfirmModal,
     LoginModal,
     NewFileModal
+  },
+  methods: {
+    handleResize () {
+      this.$store.commit('ui/setWindowWidth', window.innerWidth)
+    },
+  },
+  mounted () {
+    this.handleResize()
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handleResize)
   }
 }
 </script>

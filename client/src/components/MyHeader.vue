@@ -21,7 +21,7 @@
             <router-link class="navbar-item" :to="'/coworkers'">
               同工 Coworkers
             </router-link>
-            <router-link  class="navbar-item" :to="'/files/All'">
+            <router-link  class="navbar-item" :to="'/files'">
               资源 Resources
             </router-link>
           </div>

@@ -65,6 +65,7 @@ class MyFile < Crecto::Model
     field :file_type, String
     field :url, String
     field :info, String
+    field :path, String
   end
 
   def self.can_access(user)

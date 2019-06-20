@@ -1,39 +1,75 @@
 <template>
   <div>
     <div class="container files-container">
-      <div class="page-title-row">
-        <a class="button is-link new-button" @click="openNewFileModal">New Resource</a>
-        <h5 class="title is-5 page-title"><a :href="listUrl" target="_blank">Resources</a></h5>
-      </div>
-      <div class="tabs">
-        <ul>
-          <li :class="{'is-active': activeCategory=='All'}"><router-link :to="'/files/All'">All</router-link></li>
-          <li v-for="c in categories" :class="{'is-active': activeCategory==c}"><router-link :to="'/files/'+c">{{c}}s</router-link></li>
-        </ul>
-      </div>
-      <div class="has-text-centered" v-if="waiting">
-        <v-icon name="spinner" class="icon is-medium fa-spin"></v-icon>
+      <div class="columns files-title">
+        <div class="column address-column">
+          <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul class="address-bar">
+              <li v-for="(r, i) in routers">
+                <router-link v-if="i != routers.length - 1" :to="r[1]"><strong>{{r[0]}}</strong></router-link>
+                <a v-if="i == routers.length - 1" :href="staticPath" target="_blank"><strong>{{r[0]}}</strong></a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="column is-narrow" v-if="token">
+          <div class="dropdown is-hoverable" :class="{'is-right': windowWidth > 768}">
+            <div class="dropdown-trigger">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <span>New</span>
+                <span class="icon is-small">
+                  <v-icon name="angle-down" aria-hidden="true"></v-icon>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                <a href="#" class="dropdown-item" @click="openNewFileModal">
+                  New Resource
+                </a>
+                <a class="dropdown-item" @click="openNewFileModal">
+                  New Directory
+                </a>
+                <hr class="dropdown-divider">
+                <a href="#" class="dropdown-item has-text-danger">
+                  Delete this Directory
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div>
         <table class="table is-fullwidth is-hoverable">
           <thead>
             <tr>
-              <th>Id</th>
+              <th>#</th>
+              <th class="has-text-centered">Type</th>
               <th>Name</th>
-              <th>Type</th>
-              <th>Order</th>
+              <th>Slide</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="f in files" v-if="activeCategory=='All' || activeCategory==f.fileType" class="clickable" :class="{'slide-show': f.info}" @click="openFile(f)">
-              <td>{{f.id}}</td>
-              <td>{{f.name}}</td>
-              <td>{{f.fileType}}</td>
+            <tr v-for="(f, i) in files" class="clickable" :class="{'slide-show': f.info}" @click="openFile(f)">
+              <td>{{i+1}}</td>
+              <td class="icon-cell">
+                <v-icon class="v-icon" name="folder" scale="1.2" v-if="f.fileType == 'Directory'" />
+                <v-icon class="v-icon" name="file-alt" scale="1.2" v-if="f.fileType == 'Document'" />
+                <v-icon class="v-icon" name="file-image" scale="1.2" v-if="f.fileType == 'Picture'" />
+                <v-icon class="v-icon" name="file-audio" scale="1.2" v-if="f.fileType == 'Audio'" />
+                <v-icon class="v-icon" name="file-video" scale="1.2" v-if="f.fileType == 'Video'" />
+                <v-icon class="v-icon" name="brands/youtube" scale="1.2" v-if="f.fileType == 'YouTube'" />
+              </td>
+              <td class="filename-cell" :class="{'has-text-weight-bold': f.fileType=='Directory'}">{{f.name}}</td>
               <td>{{f.info}}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="has-text-centered" v-if="waiting">
+        <v-icon name="spinner" class="icon is-medium fa-spin"></v-icon>
       </div>
     </div>
   </div>
@@ -48,12 +84,39 @@ export default {
       waiting: false,
       categories: ['Picture', 'Document', 'Audio', 'Video', 'YouTube'],
       files: [],
-      listUrl: xHTTPx + '/cccl_files'
+      listUrl: xHTTPx + '/cccl_files',
     }
   },
   computed: {
-    activeCategory () {
-      return this.$route.params.category
+    path () {
+      var path = this.$route.params.path
+      return path ? decodeURIComponent(path) : ''
+    },
+    staticPath () {
+      return this.listUrl + '/' + this.path
+    },
+    routers() {
+      var routers = [['Resources', '/files']]
+      if(!this.path)
+        return routers
+      var ps = this.path.split('/')
+      var p = ''
+      for(var i=0;i<ps.length;i++){
+        p = i==0 ? ps[i] : (p + '/'+ ps[i])
+        routers.push([ps[i], '/files/' + encodeURIComponent(p)])
+      }
+      return routers
+    },
+    token () {
+      return this.$store.state.user.token
+    },
+    windowWidth () {
+      return this.$store.state.ui.windowWidth
+    },
+  },
+  watch: {
+    path: function (val) {
+      this.requestFiles()
     },
   },
   methods: {
@@ -62,13 +125,18 @@ export default {
         callback: { context: this, method: this.requestFiles}
       })
     },
-    requestFiles (category) {
-      if(category && this.activeCategory != 'All' && this.activeCategory != category){
-        this.activeCategory = category
-      }
+    requestFiles () {
       this.waiting = true
-      this.$http.get(xHTTPx + '/get_files').then(response => {
+      var message = {path: this.path}
+      this.$http.post(xHTTPx + '/get_files', message).then(response => {
         this.files = response.body
+        this.files.sort(function(a, b){
+          if(a.fileType == 'Directory' && b.fileType != 'Directory')
+            return -1
+          if(a.fileType != 'Directory' && b.fileType == 'Directory')
+            return 1
+          return a.name.localeCompare(b.name)
+        })
         this.waiting = false
       }, response => {
         console.log('Failed to get files!')
@@ -76,7 +144,12 @@ export default {
       })
     },
     openFile(f){
-      this.$router.push('/file/' + f.id)
+      if(f.fileType == 'Directory'){
+        var path = f.path ? (f.path + '/' + f.name) : f.name
+        this.$router.push('/files/' + encodeURIComponent(path))
+      }else{
+        this.$router.push('/file/' + f.id)
+      }
     }
   },
   mounted () {
@@ -95,16 +168,19 @@ export default {
   padding-right: 10px;
 }
 
-.page-title-row {
-  margin-bottom: 15px;
+.files-title {
+  margin-bottom: 0px;
+}
 
-  .new-button {
-    float: right;
-  }
+.address-column {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 
-  .page-title {
-    padding-top: 7px;
-  }
+.address-bar {
+  flex-shrink: unset;
+  flex-wrap: wrap;
+  font-size: 1.25rem;
 }
 
 .clickable {
@@ -113,6 +189,19 @@ export default {
 
 .slide-show {
   background-color: hsl(0, 0%, 96%);
+}
+
+.icon-cell {
+  text-align: center;
+
+  .v-icon {
+    position: relative;
+    top: 3px;
+  }
+}
+
+.filename-cell {
+  word-break: break-word;
 }
 
 </style>

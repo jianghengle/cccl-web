@@ -5,18 +5,18 @@
         <a class="button back-button" @click="$router.go(-1)">
           <v-icon name="chevron-left"></v-icon>
         </a>
-        <a class="button is-danger file-button" @click="deleteSelf">Delete</a>
+        <a class="button is-danger file-button" v-if="token" @click="deleteSelf">Delete</a>
         <h5 class="title is-5 page-title">{{file.name}}</h5>
       </div>
 
       <div>
         <div class="field">
           <div class="control">
-            <a :href="fullUrl">{{fullUrl}}</a>
+            <a :href="fullUrl" target="_blank">{{fullUrl}}</a>
           </div>
         </div>
 
-        <div class="field has-addons">
+        <div class="field has-addons" v-if="token">
           <p class="control">
             <span class="select">
               <select v-model="showOnHome">
@@ -76,6 +76,9 @@ export default {
     }
   },
   computed: {
+    token () {
+      return this.$store.state.user.token
+    },
     fileId () {
       return this.$route.params.id
     },

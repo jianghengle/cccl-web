@@ -58,7 +58,7 @@ module MyServer
         HttpAPI::BlockController.get_recent_schedule_blocks(env)
       end
 
-      get "/get_files" do |env|
+      post "/get_files" do |env|
         HttpAPI::FileController.get_files(env)
       end
 

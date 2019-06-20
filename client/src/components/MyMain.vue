@@ -10,7 +10,6 @@
             <v-icon class="icon has-text-grey-lighter" name="angle-right"/>
           </a>
           <div>
-            
           </div>
         </div>
       </div>
@@ -43,13 +42,15 @@ export default {
   },
   data () {
     return {
-      windowWidth: 0,
       slideWidth: 0,
       welcomeBlock: null,
       scheduleBlocks: []
     }
   },
   computed: {
+    windowWidth () {
+      return this.$store.state.ui.windowWidth
+    },
     slideHeight () {
       return this.windowWidth > 600 ? 600 : 300
     },
@@ -57,11 +58,12 @@ export default {
       return this.windowWidth > 600 ? 280 : 130
     }
   },
-  methods: {
-    handleResize () {
-      this.windowWidth = window.innerWidth
+  watch: {
+    windowWidth: function (val) {
       this.slideWidth = document.getElementById('slides-container').offsetWidth
     },
+  },
+  methods: {
     requestWelcomeBlock () {
       this.$http.post(xHTTPx + '/get_block_by_name', {name: 'Welcome!'}).then(response => {
         this.welcomeBlock = response.body
@@ -79,16 +81,10 @@ export default {
     },
   },
   mounted () {
-    this.windowWidth = window.innerWidth
     this.slideWidth = document.getElementById('slides-container').offsetWidth
-    window.addEventListener('resize', this.handleResize)
-
     this.requestWelcomeBlock()
     this.requestRecentSchedule()
   },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.handleResize)
-  }
 }
 </script>
 
