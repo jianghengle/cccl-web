@@ -14,6 +14,10 @@ export const state = {
     opened: false,
     callback: null
   },
+  newFolderModal: {
+    opened: false,
+    callback: null
+  },
 }
 
 // mutations
@@ -51,6 +55,16 @@ export const mutations = {
   closeNewFileModal (state) {
     state.newFileModal.opened = false
     state.newFileModal.callback = null
+  },
+
+  openNewFolderModal (state, context) {
+    state.newFolderModal.callback = context.callback
+    state.newFolderModal.opened = true
+  },
+
+  closeNewFolderModal (state) {
+    state.newFolderModal.opened = false
+    state.newFolderModal.callback = null
   },
 }
 

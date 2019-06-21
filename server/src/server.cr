@@ -78,6 +78,14 @@ module MyServer
         HttpAPI::FileController.delete_file(env)
       end
 
+      post "/create_directory" do |env|
+        HttpAPI::FileController.create_directory(env)
+      end
+
+      post "/delete_directory" do |env|
+        HttpAPI::FileController.delete_directory(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       Kemal.run

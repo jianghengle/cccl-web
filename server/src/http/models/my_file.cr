@@ -30,7 +30,6 @@ module MyServer
           query = Query.where(path: path)
         end
         items = Repo.all(MyFile, query)
-        p items.size
         return items.as(Array) unless items.nil?
         [] of MyFile
       end
@@ -107,6 +106,56 @@ module MyServer
           if File.exists?(full_path)
             File.delete(full_path)
           end
+        end
+      end
+
+      def self.create_directory(path, name)
+        raise "No static dir setup" unless ENV.has_key?("CCCL_STATIC")
+        full_path = File.join(ENV["CCCL_STATIC"], path, name)
+        Dir.mkdir(full_path)
+
+        directory = MyFile.new
+        directory.name = name
+        directory.file_type = "Directory"
+        directory.path = path unless path.empty?
+
+        changeset = Repo.insert(directory)
+        raise changeset.errors.to_s unless changeset.valid?
+      end
+
+      def self.delete_directory(path)
+        return if path.empty?
+
+        name = File.basename(path)
+        parent_path = File.dirname(path)
+        if parent_path == "."
+          query = Query.where(name: name).where(file_type: "Directory").where(path: nil)
+        else
+          query = Query.where(name: name).where(file_type: "Directory").where(path: parent_path)
+        end
+        directory = Repo.get_by(MyFile, query).as(MyFile)
+        Repo.delete(directory)
+
+        query = Query.where("path LIKE '#{path}%'")
+        Repo.delete_all(MyFile, query)
+
+        raise "No static dir setup" unless ENV.has_key?("CCCL_STATIC")
+        full_path = File.join(ENV["CCCL_STATIC"], path)
+        MyFile.delete_files(full_path)
+      end
+
+      def self.delete_files(path)
+        return unless File.exists?(path)
+        if File.file?(path)
+          File.delete(path)
+        else
+          Dir.each path do |filename|
+            if filename.to_s != "." && filename.to_s != ".."
+              p = path + "/" + filename
+              MyFile.delete_files(p)
+            end
+          end
+          Dir.rmdir(path)
         end
       end
     end

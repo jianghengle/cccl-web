@@ -9,6 +9,7 @@
     <confirm-modal></confirm-modal>
     <login-modal></login-modal>
     <new-file-modal></new-file-modal>
+    <new-folder-modal></new-folder-modal>
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import MyFooter from './components/MyFooter'
 import ConfirmModal from './components/modals/ConfirmModal'
 import LoginModal from './components/modals/LoginModal'
 import NewFileModal from './components/modals/NewFileModal'
+import NewFolderModal from './components/modals/NewFolderModal'
 
 export default {
   name: 'App',
@@ -26,7 +28,8 @@ export default {
     MyFooter,
     ConfirmModal,
     LoginModal,
-    NewFileModal
+    NewFileModal,
+    NewFolderModal
   },
   methods: {
     handleResize () {

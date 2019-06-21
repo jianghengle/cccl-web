@@ -74,6 +74,33 @@ module MyServer
           error(ctx, e.message.to_s)
         end
       end
+
+      def create_directory(ctx)
+        begin
+          user = verify_token(ctx)
+          path = get_param!(ctx, "path")
+          name = get_param!(ctx, "name")
+          MyFile.create_directory(path, name)
+          {ok: true}.to_json
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
+      def delete_directory(ctx)
+        begin
+          user = verify_token(ctx)
+          path = get_param!(ctx, "path")
+          MyFile.delete_directory(path)
+          {ok: true}.to_json
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
     end
   end
 end

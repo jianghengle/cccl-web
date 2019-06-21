@@ -27,11 +27,11 @@
                 <a href="#" class="dropdown-item" @click="openNewFileModal">
                   New Resource
                 </a>
-                <a class="dropdown-item" @click="openNewFileModal">
+                <a class="dropdown-item" @click="openNewFolderModal">
                   New Directory
                 </a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item has-text-danger">
+                <hr class="dropdown-divider" v-if="path">
+                <a href="#" class="dropdown-item has-text-danger" v-if="path" @click="deleteSelf">
                   Delete this Directory
                 </a>
               </div>
@@ -66,6 +66,7 @@
             </tr>
           </tbody>
         </table>
+        <div class="has-text-centered">(Empty)</div>
       </div>
 
       <div class="has-text-centered" v-if="waiting">
@@ -125,6 +126,11 @@ export default {
         callback: { context: this, method: this.requestFiles}
       })
     },
+    openNewFolderModal () {
+      this.$store.commit('modals/openNewFolderModal', {
+        callback: { context: this, method: this.requestFiles}
+      })
+    },
     requestFiles () {
       this.waiting = true
       var message = {path: this.path}
@@ -150,7 +156,30 @@ export default {
       }else{
         this.$router.push('/file/' + f.id)
       }
-    }
+    },
+    deleteSelf () {
+      var confirm = {
+        title: 'Delete Directory',
+        message: 'Are you sure to delete the directory and all the resources inside?',
+        button: 'Yes, I am sure.',
+        callback: {
+          context: this,
+          method: this.deleteConfirmed,
+          args: []
+        }
+      }
+      this.$store.commit('modals/openConfirmModal', confirm)
+    },
+    deleteConfirmed () {
+      var message = {path: this.path}
+      this.$http.post(xHTTPx + '/delete_directory', message).then(response => {
+        if(response.body.ok){
+          this.$router.replace(this.routers[this.routers.length-2][1])
+        }
+      }, response => {
+        console.log('Failed to delete directory!')
+      })
+    },
   },
   mounted () {
     this.requestFiles()
