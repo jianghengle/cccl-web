@@ -8,7 +8,7 @@
         <button class="delete" @click="close"></button>
       </header>
       <section class="modal-card-body">
-        <div class="my-form">
+        <div class="my-form" v-if="opened">
           <div class="field">
             <label class="label">Upload File?</label>
             <div class="field-body">
@@ -33,13 +33,13 @@
               <div class="field">
                 <div class="control">
                   <label class="file-label">
-                    <input class="file-input" type="file"@change="onFileChange">
+                    <input class="file-input" type="file" multiple @change="onFileChange">
                     <span class="file-cta">
                       <span class="file-icon">
                         <v-icon name="upload"></v-icon>
                       </span>
                       <span class="file-label">
-                        {{file ? file.name : 'Choose File'}}
+                        {{files.length ? files.length + ' Selected' : 'Choose File(s)'}}
                       </span>
                     </span>
                   </label>
@@ -129,7 +129,7 @@ export default {
       waiting: false,
       error: '',
       uploadFile: 'Yes',
-      file: null,
+      files: [],
       name: '',
       fileType: '',
       url: '',
@@ -142,15 +142,19 @@ export default {
       return this.$store.state.modals.newFileModal.opened
     },
     canCreate () {
-      return this.uploadFile == 'Yes' ? this.file : (this.url && this.name)
-    }
+      return this.uploadFile == 'Yes' ? this.files.length : (this.url && this.name)
+    },
+    path () {
+      var path = this.$route.params.path
+      return path ? decodeURIComponent(path) : ''
+    },
   },
   watch: {
     opened: function (val) {
       if (val) {
         this.waiting = false
         this.error = ''
-        this.file = null
+        this.files = []
         this.name = ''
         this.fileType = ''
         this.url = ''
@@ -175,31 +179,56 @@ export default {
       if(!this.canCreate || this.waiting)
         return
       this.waiting = true
-      
-      var formData = new FormData()
-      formData.append('uploadFile', this.uploadFile)
-      formData.append('name', this.name)
-      formData.append('fileType', this.fileType)
-      formData.append('url', this.url)
-      formData.append('info', this.showOnHome == 'Yes' ? this.showOrder : '')
-      if(this.uploadFile == 'Yes' && this.file){
-        formData.append('file', this.file)
+
+      var promises = []
+      if(this.uploadFile == 'Yes'){
+        for(var i=0;i<this.files.length;i++){
+          var file = this.files[i]
+          var formData = new FormData()
+          formData.append('uploadFile', this.uploadFile)
+          formData.append('name', this.name)
+          formData.append('path', this.path)
+          formData.append('fileType', this.fileType)
+          formData.append('url', this.url)
+          formData.append('info', this.showOnHome == 'Yes' ? this.showOrder : '')
+          formData.append('file', file)
+          var promise = this.$http.post(xHTTPx + '/create_file', formData).then(response => {
+            this.error = ''
+          }, response => {
+            this.error = 'Failed to create!'
+          })
+          promises.push(promise)
+        }
+      }else{
+        var formData = new FormData()
+        formData.append('uploadFile', this.uploadFile)
+        formData.append('name', this.name.trim())
+        formData.append('path', this.path)
+        formData.append('fileType', this.fileType)
+        formData.append('url', this.url.trim())
+        formData.append('info', this.showOnHome == 'Yes' ? this.showOrder : '')
+        var promise = this.$http.post(xHTTPx + '/create_file', formData).then(response => {
+          this.error = ''
+        }, response => {
+          this.error = 'Failed to create!'
+        })
+        promises.push(promise)
       }
 
-      this.$http.post(xHTTPx + '/create_file', formData).then(response => {
-        this.error = ''
-        this.waiting = false
-        this.doneUpload()
-      }, response => {
-        this.error = 'Failed to create!'
-        this.waiting = false
+      var vm = this
+      Promise.all(promises).then((response) => {
+        vm.waiting = false
+        vm.doneUpload()
+      }, (response) => {
+        vm.waiting = false
+        vm.error = 'Some uploads failed...'
       })
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files
       if (!files.length)
         return
-      this.file = files[0]
+      this.files = files
     }
   },
 }

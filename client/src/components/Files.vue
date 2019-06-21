@@ -24,14 +24,14 @@
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
               <div class="dropdown-content">
-                <a href="#" class="dropdown-item" @click="openNewFileModal">
+                <a class="dropdown-item" @click="openNewFileModal">
                   New Resource
                 </a>
                 <a class="dropdown-item" @click="openNewFolderModal">
                   New Directory
                 </a>
                 <hr class="dropdown-divider" v-if="path">
-                <a href="#" class="dropdown-item has-text-danger" v-if="path" @click="deleteSelf">
+                <a class="dropdown-item has-text-danger" v-if="path" @click="deleteSelf">
                   Delete this Directory
                 </a>
               </div>
@@ -66,7 +66,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="has-text-centered">(Empty)</div>
+        <div class="has-text-centered" v-if="!files.length">(Empty)</div>
       </div>
 
       <div class="has-text-centered" v-if="waiting">

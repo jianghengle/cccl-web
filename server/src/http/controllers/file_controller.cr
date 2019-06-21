@@ -51,6 +51,7 @@ module MyServer
           id = get_param!(ctx, "id").to_i
           file = MyFile.get_file(id)
           file.info = get_param!(ctx, "info")
+          file.file_type = get_param!(ctx, "fileType")
 
           MyFile.update_file(file)
           {ok: true}.to_json
@@ -94,6 +95,32 @@ module MyServer
           user = verify_token(ctx)
           path = get_param!(ctx, "path")
           MyFile.delete_directory(path)
+          {ok: true}.to_json
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
+      def get_directories(ctx)
+        begin
+          directories = MyFile.get_directories
+          "[" + (directories.join(", ") { |i| i.to_json }) + "]"
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
+      def move_file(ctx)
+        begin
+          user = verify_token(ctx)
+
+          file_id = get_param!(ctx, "fileId").to_i
+          move_to = get_param!(ctx, "moveTo")
+          MyFile.move_file(file_id, move_to)
           {ok: true}.to_json
         rescue ex : InsufficientParameters
           error(ctx, "Not all required parameters were present")

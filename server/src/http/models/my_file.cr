@@ -34,6 +34,13 @@ module MyServer
         [] of MyFile
       end
 
+      def self.get_directories
+        query = Query.where(file_type: "Directory")
+        items = Repo.all(MyFile, query)
+        return items.as(Array) unless items.nil?
+        [] of MyFile
+      end
+
       def self.get_file(id)
         file = Repo.get(MyFile, id)
         raise "cannot find file" if file.nil?
@@ -48,6 +55,9 @@ module MyServer
             upload_file = part.body.gets_to_end
           elsif part.name == "name"
             file.name = part.body.gets_to_end
+          elsif part.name == "path"
+            path = part.body.gets_to_end
+            file.path = path unless path.empty?
           elsif part.name == "fileType"
             file.file_type = part.body.gets_to_end
           elsif part.name == "url"
@@ -57,7 +67,9 @@ module MyServer
           elsif part.name == "file"
             if upload_file == "Yes"
               raise "No static dir setup" unless ENV.has_key?("CCCL_STATIC")
-              data_dir = File.join(ENV["CCCL_STATIC"], file.file_type.to_s + "s")
+              path = ""
+              path = file.path.to_s unless file.path.nil?
+              data_dir = File.join(ENV["CCCL_STATIC"], path)
 
               filename = part.filename
               raise "No filename included in upload" unless filename.is_a?(String)
@@ -69,7 +81,7 @@ module MyServer
               end
 
               file.name = unique_name
-              file.url = "/" + file.file_type.to_s + "s/" + unique_name
+              file.url = "/" + File.join(path, unique_name)
             end
           end
         end
@@ -107,6 +119,34 @@ module MyServer
             File.delete(full_path)
           end
         end
+      end
+
+      def self.move_file(file_id, move_to)
+        file = Repo.get!(MyFile, file_id)
+
+        raise "No static dir setup" unless ENV.has_key?("CCCL_STATIC")
+        if file.path.nil?
+          source_full_path = File.join(ENV["CCCL_STATIC"], file.name.to_s)
+        else
+          source_full_path = File.join(ENV["CCCL_STATIC"], file.path.to_s, file.name.to_s)
+        end
+
+        if (move_to == "/")
+          target_path = ENV["CCCL_STATIC"]
+          file.path = nil
+        else
+          target_path = File.join(ENV["CCCL_STATIC"], move_to)
+          file.path = move_to.lchop
+        end
+
+        if (file.url.to_s.starts_with?("/"))
+          MyFile.copy_file(source_full_path, target_path)
+          File.delete(source_full_path)
+          file.url = "/" + File.join(file.path.to_s, file.name.to_s)
+        end
+
+        changeset = Repo.update(file)
+        raise changeset.errors.to_s unless changeset.valid?
       end
 
       def self.create_directory(path, name)
@@ -156,6 +196,16 @@ module MyServer
             end
           end
           Dir.rmdir(path)
+        end
+      end
+
+      def self.copy_file(source_full_path, target_path)
+        filename = File.basename(source_full_path)
+        new_full_path = File.join(target_path, filename)
+        File.open(new_full_path, "w", 0o660) do |tf|
+          File.open(source_full_path) do |sf|
+            IO.copy(sf, tf)
+          end
         end
       end
     end

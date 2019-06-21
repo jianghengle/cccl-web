@@ -86,6 +86,14 @@ module MyServer
         HttpAPI::FileController.delete_directory(env)
       end
 
+      get "/get_directories" do |env|
+        HttpAPI::FileController.get_directories(env)
+      end
+
+      post "/move_file" do |env|
+        HttpAPI::FileController.move_file(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       Kemal.run
