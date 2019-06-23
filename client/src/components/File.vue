@@ -155,7 +155,7 @@ export default {
       return this.$route.params.id
     },
     changed () {
-      return (this.info != this.file.info) || (this.fileType != this.file.fileType)
+      return (this.info !== this.file.info) || (this.fileType != this.file.fileType)
     },
     fullUrl () {
       if(this.file.url.startsWith('/')){

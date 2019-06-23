@@ -34,6 +34,13 @@ module MyServer
         [] of MyFile
       end
 
+      def self.get_home_files
+        query = Query.where("info IS NOT NULL and info <> ''")
+        items = Repo.all(MyFile, query)
+        return items.as(Array) unless items.nil?
+        [] of MyFile
+      end
+
       def self.get_directories
         query = Query.where(file_type: "Directory")
         items = Repo.all(MyFile, query)

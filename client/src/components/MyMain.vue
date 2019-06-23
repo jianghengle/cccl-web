@@ -3,13 +3,36 @@
     <div>
       <div class="container">
         <div id="slides-container" class="slides-container" :style="{'height': slideHeight+'px'}">
-          <a class="button is-large is-white slide-left" :style="{'top': angleTop+'px'}">
-            <v-icon class="icon has-text-grey-lighter" name="angle-left"/>
+          <a class="button is-large is-text slide-left" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex-1) < 0 ?  (homeFiles.length - 1) : slideIndex-1">
+            <v-icon class="icon has-text-grey-light" name="angle-left"/>
           </a>
-          <a class="button is-large is-white slide-right" :style="{'top': angleTop+'px'}">
-            <v-icon class="icon has-text-grey-lighter" name="angle-right"/>
+          <a class="button is-large is-text slide-right" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex+1) % homeFiles.length">
+            <v-icon class="icon has-text-grey-light" name="angle-right"/>
           </a>
-          <div>
+
+          <div v-if="slideFile && slideFile.fileType == 'Picture'" class="image-container">
+            <img id="my-image" class="image" :src="slideFile.fullUrl" :class="{'fullWidth': fullWidth, 'fullHeight': !fullWidth}" @load="mediaLoaded" />
+          </div>
+
+          <iframe v-if="slideFile && slideFile.fileType == 'Document'" class="doc" :src="slideFile.iframeSource"></iframe>
+
+          <div v-if="slideFile && slideFile.fileType == 'Audio'" class="audio-container">
+            <h5 class="title is-5">{{slideFile.name}}</h5>
+            <audio id="my-audio" controls class="audio">
+              <source :src="slideFile.fullUrl" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+
+          <div v-if="slideFile && slideFile.fileType == 'Video'" class="video-container">
+            <video id="my-video" controls class="video" @loadeddata="mediaLoaded" :class="{'fullWidth': fullWidth, 'fullHeight': !fullWidth}">
+              <source :src="slideFile.fullUrl" type="video/mp4">
+              Your browser does not support the video element.
+            </video>
+          </div>
+
+          <div v-if="slideFile && slideFile.fileType == 'YouTube'" class="youtube-container">
+            <iframe class="youtube" :src="slideFile.fullUrl" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
           </div>
         </div>
       </div>
@@ -44,7 +67,10 @@ export default {
     return {
       slideWidth: 0,
       welcomeBlock: null,
-      scheduleBlocks: []
+      scheduleBlocks: [],
+      homeFiles: [],
+      slideIndex: 0,
+      mediaRatio: null
     }
   },
   computed: {
@@ -56,12 +82,39 @@ export default {
     },
     angleTop () {
       return this.windowWidth > 600 ? 280 : 130
+    },
+    slideFile () {
+      if(this.slideIndex >= 0 && this.slideIndex < this.homeFiles.length){
+        var file = this.homeFiles[this.slideIndex]
+        var fullUrl = file.url.startsWith('/') ? (xHTTPx + '/cccl_files' + file.url) : file.url
+        var iframeSource = "https://docs.google.com/gview?url=" + fullUrl + "&embedded=true"
+        return {
+          name: file.name,
+          fileType: file.fileType,
+          fullUrl: fullUrl,
+          iframeSource: iframeSource
+        }
+      }
+    },
+    fullWidth () {
+      if(this.mediaRatio){
+        var h = this.slideWidth * this.mediaRatio
+        return h < this.slideHeight
+      }
     }
   },
   watch: {
     windowWidth: function (val) {
       this.slideWidth = document.getElementById('slides-container').offsetWidth
     },
+    slideFile: function (val) {
+      var video = document.getElementById('my-video')
+      if(video)
+        video.load()
+      var audio = document.getElementById('my-audio')
+      if(audio)
+        audio.load()
+    }
   },
   methods: {
     requestWelcomeBlock () {
@@ -79,9 +132,45 @@ export default {
         })
       })
     },
+    requestHomeFiles () {
+      this.$http.get(xHTTPx + '/get_home_files').then(response => {
+        this.homeFiles = response.body.sort(function(a, b){
+          return a.info - b.info
+        })
+      })
+    },
+    mediaLoaded () {
+      if(this.slideFile.fileType == 'Video'){
+        var vid = document.getElementById("my-video")
+        this.mediaRatio = vid.videoHeight / vid.videoWidth
+      }else if(this.slideFile.fileType == 'Picture'){
+        var img = document.getElementById('my-image')
+        this.mediaRatio = img.clientHeight / img.clientWidth
+        var newImg = new Image()
+        var vm = this
+        newImg.onload = function() {
+          var ratio = newImg.height / newImg.width
+          if(ratio >= 1){
+            if(vm.mediaRatio >= 1){
+              vm.mediaRatio = ratio
+            }else{
+              vm.mediaRatio = 1 / ratio
+            }
+          }else{
+            if(vm.mediaRatio >= 1){
+              vm.mediaRatio = 1 / ratio
+            }else{
+              vm.mediaRatio = ratio
+            }
+          }
+        }
+        newImg.src = this.slideFile.fullUrl
+      }
+    }
   },
   mounted () {
     this.slideWidth = document.getElementById('slides-container').offsetWidth
+    this.requestHomeFiles()
     this.requestWelcomeBlock()
     this.requestRecentSchedule()
   },
@@ -92,6 +181,7 @@ export default {
 <style lang="scss" scoped>
 
 .slides-container {
+  margin-top: 3px;
   width: 100%;
   position: relative;
 
@@ -100,6 +190,7 @@ export default {
     position: absolute;
     top: 260px;
     cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
   }
 
   .slide-right {
@@ -108,7 +199,70 @@ export default {
     top: 260px;
     right: 0px;
     cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
   }
+
+  .image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .image {
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .doc {
+    width: 100%;
+    height: 100%;
+  }
+
+  .audio-container {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .video-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .video {
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .youtube-container {
+    height: 100%;
+    position: relative;
+    padding-top: 56.25%;
+
+    .youtube {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width:100%;
+      height:100%;
+    }
+  }
+}
+
+.fullWidth {
+  width: 100%;
+  height: auto;
+}
+
+.fullHeight {
+  height: 100%;
+  width: auto;
 }
 
 .welcome-block {

@@ -94,6 +94,10 @@ module MyServer
         HttpAPI::FileController.move_file(env)
       end
 
+      get "/get_home_files" do |env|
+        HttpAPI::FileController.get_home_files(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       Kemal.run

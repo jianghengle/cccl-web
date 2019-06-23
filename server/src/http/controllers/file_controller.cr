@@ -19,6 +19,18 @@ module MyServer
         end
       end
 
+      def get_home_files(ctx)
+        begin
+          items = MyFile.get_home_files
+          arr = [] of String
+          "[" + (items.join(", ") { |i| i.to_json }) + "]"
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
       def get_file(ctx)
         begin
           id = get_param!(ctx, "id").to_i
