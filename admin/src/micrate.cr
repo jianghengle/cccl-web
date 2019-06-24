@@ -1,7 +1,7 @@
 #! /usr/bin/env crystal
 
 # Require your database's adapter
-require "pg"
+require "mysql"
 
 require "micrate"
 
