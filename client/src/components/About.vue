@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div class="container about-block" v-if="aboutBlock">
-      <block :blockObj="aboutBlock" :editable="true" :inTable="false" @blockChanged="aboutBlockChanged"></block>
-    </div>
-    <div class="container contact-block" v-if="contactBlock">
-      <block :blockObj="contactBlock" :editable="true" :inTable="false" @blockChanged="contactBlockChanged"></block>
+    <div class="container my-page" v-if="aboutBlock || contactBlock">
+      <div class="about-block" v-if="aboutBlock">
+        <block :blockObj="aboutBlock" :editable="true" :inTable="false" @blockChanged="aboutBlockChanged"></block>
+      </div>
+      <div class="contact-block" v-if="contactBlock">
+        <block :blockObj="contactBlock" :editable="true" :inTable="false" @blockChanged="contactBlockChanged"></block>
+      </div>
     </div>
   </div>
 </template>

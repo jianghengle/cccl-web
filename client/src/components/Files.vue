@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container files-container">
+  <div class="container my-page">
+    <div class="files-container">
       <div class="columns files-title">
         <div class="column address-column">
           <nav class="breadcrumb" aria-label="breadcrumbs">

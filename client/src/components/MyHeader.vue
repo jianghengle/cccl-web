@@ -1,12 +1,13 @@
 <template>
   <div>
-    <nav class="navbar has-shadow">
+    <nav class="navbar my-navbar">
       <div class="container">
         <div class="navbar-brand">
-          <router-link class="navbar-item is-size-4 has-text-weight-bold has-text-black" :to="'/'">
+          <router-link class="navbar-item is-size-4 has-text-weight-bold my-title" :to="'/'">
             林肯华人基督教会
+            <img src="static/logo.png" />
           </router-link>
-          <div class="navbar-burger burger app-burger" :class="{'is-active': menuActive}"
+          <div class="navbar-burger burger app-burger my-menu" :class="{'is-active': menuActive}"
             @click="menuActive = !menuActive">
             <span></span>
             <span></span>
@@ -15,13 +16,13 @@
         </div>
         <div class="navbar-menu" :class="{'is-active': menuActive}">
           <div class="navbar-start">
-            <router-link class="navbar-item" :to="'/about'">
+            <router-link class="navbar-item my-menu" :to="'/about'">
               关于我们 About Us
             </router-link>
-            <router-link class="navbar-item" :to="'/coworkers'">
+            <router-link class="navbar-item my-menu" :to="'/coworkers'">
               同工 Coworkers
             </router-link>
-            <router-link  class="navbar-item" :to="'/files'">
+            <router-link  class="navbar-item my-menu" :to="'/files'">
               资源 Resources
             </router-link>
           </div>
@@ -29,12 +30,12 @@
             <div class="navbar-item">
               <div class="field is-grouped">
                 <p class="control" v-if="!token">
-                  <a class="button" @click="login">
+                  <a class="button my-button" @click="login">
                     <v-icon name="sign-in-alt"/>&nbsp;Login
                   </a>
                 </p>
                 <p class="control" v-if="token">
-                  <a class="button" @click="logout">
+                  <a class="button my-button" @click="logout">
                     <v-icon name="sign-out-alt"/>&nbsp;Logout
                   </a>
                 </p>
@@ -94,5 +95,41 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+
+.my-navbar {
+  background-color: transparent;
+
+  .navbar-menu {
+    background-color: transparent;
+  }
+}
+
+.my-title {
+  color: white;
+}
+
+.my-title:hover {
+  background-color: transparent;
+  color: white;
+}
+
+.my-menu {
+  color: hsla(0,0%,100%,.65);
+}
+
+.my-menu:hover {
+  background-color: transparent;
+  color: #dddddd;
+}
+
+.my-button {
+  color: hsla(0,0%,100%,.65);
+  background-color: transparent;
+}
+
+.my-button:hover {
+  background-color: transparent;
+  color: #dddddd;
+}
 
 </style>

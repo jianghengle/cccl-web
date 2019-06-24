@@ -17,11 +17,15 @@
           <iframe v-if="slideFile && slideFile.fileType == 'Document'" class="doc" :src="slideFile.iframeSource"></iframe>
 
           <div v-if="slideFile && slideFile.fileType == 'Audio'" class="audio-container">
-            <h5 class="title is-5">{{slideFile.name}}</h5>
-            <audio id="my-audio" controls class="audio">
-              <source :src="slideFile.fullUrl" type="audio/mpeg">
-              Your browser does not support the audio element.
-            </audio>
+            <div class="card">
+              <div class="card-content">
+                <h5 class="title is-5">{{slideFile.name}}</h5>
+                <audio id="my-audio" controls class="audio">
+                  <source :src="slideFile.fullUrl" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+            </div>
           </div>
 
           <div v-if="slideFile && slideFile.fileType == 'Video'" class="video-container">
@@ -37,16 +41,19 @@
         </div>
       </div>
     </div>
-    <div class="container welcome-block" v-if="welcomeBlock">
-      <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
-    </div>
-    <div class="container schedule-blocks">
-      <h5 class="title is-5">最近的服侍安排：</h5>
-      <div class="columns is-multiline">
-        <div v-for="s in scheduleBlocks" class="column is-half">
-          <div class="card">
-            <div class="card-content">
-              <block :blockObj="s" :editable="false" :inTable="false"></block>
+
+    <div class="container my-page">
+      <div class="welcome-block" v-if="welcomeBlock">
+        <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
+      </div>
+      <div class="schedule-blocks">
+        <h5 class="title is-5">最近的服侍安排：</h5>
+        <div class="columns is-multiline">
+          <div v-for="s in scheduleBlocks" class="column is-half">
+            <div class="card">
+              <div class="card-content">
+                <block :blockObj="s" :editable="false" :inTable="false"></block>
+              </div>
             </div>
           </div>
         </div>
@@ -212,12 +219,14 @@ export default {
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
+      border-radius: 5px;
     }
   }
 
   .doc {
     width: 100%;
     height: 100%;
+    border-radius: 5px;
   }
 
   .audio-container {
@@ -225,6 +234,10 @@ export default {
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
+
+    .card {
+      border-radius: 5px;
+    }
   }
 
   .video-container {
@@ -237,6 +250,7 @@ export default {
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
+      border-radius: 5px;
     }
   }
 
@@ -251,6 +265,7 @@ export default {
       left: 0px;
       width:100%;
       height:100%;
+      border-radius: 5px;
     }
   }
 }
@@ -266,7 +281,7 @@ export default {
 }
 
 .welcome-block {
-  margin-top: 20px;
+  margin-top: 50px;
   margin-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;

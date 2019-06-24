@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <img src="static/background1.png" class="background" />
     <my-header></my-header>
     <div class="my-body">
       <router-view></router-view>
@@ -49,10 +50,25 @@ export default {
 <style lang="scss">
 @import "~bulma/sass/utilities/initial-variables";
 $navbar-height: 84px;
+$blue: #53098b;
 @import "~bulma";
+
+.background {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 300px;
+}
 
 .my-body {
   min-height: 500px;
+}
+
+.my-page {
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .date-picker-wrapper {

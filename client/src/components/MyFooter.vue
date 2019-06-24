@@ -1,6 +1,6 @@
 <template>
   <div>
-    <footer class="footer">
+    <footer class="footer my-footer">
       <div class="container">
         <div class="content has-text-centered">
           <p>
@@ -25,6 +25,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.my-footer {
+  background-color: #f7f3f9;
+}
 
 .logo {
   padding: 10px;

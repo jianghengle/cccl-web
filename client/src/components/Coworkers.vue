@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container schedule-block">
+  <div class="container my-page">
+    <div class="schedule-block">
       <h4 class="title is-4">Schedule</h4>
       <div class="schedule-table">
         <table class="table is-fullwidth">
@@ -67,7 +67,7 @@
         </div>
       </div>
     </div>
-    <div class="container coworkders-block" v-if="coworkersBlock">
+    <div class="coworkders-block" v-if="coworkersBlock">
       <block :blockObj="coworkersBlock" :editable="true" :inTable="false" @blockChanged="coworkersBlockChanged"></block>
     </div>
   </div>

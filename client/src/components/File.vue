@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container file-container" v-if="file">
+  <div class="container my-page">
+    <div class="file-container" v-if="file">
       <div class="columns file-title">
         <div class="column address-column">
           <nav class="breadcrumb" aria-label="breadcrumbs">
