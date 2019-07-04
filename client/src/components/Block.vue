@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h4 class="title is-4" v-if="normal">
+    <h4 class="title is-4" v-if="normal" :style="{'color': textColor}">
       <span>{{title}}</span>
-      <a class="button is-white is-small" v-if="editable && token" @click="startEditing">
-        <v-icon class="icon has-text-grey-light" name="edit"/>
+      <a class="button is-white is-small" :class="{'no-background': textColor}" v-if="editable && token" @click="startEditing">
+        <v-icon class="icon has-text-grey-light" :style="{'color': textColor}" name="edit"/>
       </a>
     </h4>
     <div class="table-header" v-if="!normal">
@@ -15,7 +15,7 @@
     </div>
 
     <div v-if="!inTable || blockObj.open">
-      <div class="content" v-if="!editing">
+      <div class="content" v-if="!editing" :style="{'color': textColor ? textColor : 'black'}">
         <vue-markdown :source="content"></vue-markdown>
       </div>
       <div v-else>
@@ -51,7 +51,7 @@
             <button class="button is-danger" :class="{'is-loading': waiting}" @click="deleteBlock">Delete</button>
           </div>
           <div class="control">
-            <button class="button is-text" @click="cancelEditing">Cancel</button>
+            <button class="button is-light" @click="cancelEditing">Cancel</button>
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default {
     VueMarkdown,
     Datepicker
   },
-  props: ['blockObj', 'editable', 'inTable'],
+  props: ['blockObj', 'editable', 'inTable', 'textColor'],
   data () {
     return {
       waiting: false,
@@ -200,5 +200,14 @@ export default {
 .button-field {
   margin-bottom: 10px;
 }
+
+.no-background {
+  background-color: transparent;
+}
+
+.no-background:hover{
+  background-color: transparent;
+}
+
 
 </style>

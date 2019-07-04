@@ -318,8 +318,8 @@ export default {
 <style lang="scss" scoped>
 
 .file-container {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   padding-left: 10px;
   padding-right: 10px;
 }

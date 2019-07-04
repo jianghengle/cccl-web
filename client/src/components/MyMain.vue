@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div>
-      <div class="container">
+    <div class="my-back">
+      <div class="container" :style="{'padding': slidePadding + 'px'}">
         <div id="slides-container" class="slides-container" :style="{'height': slideHeight+'px'}">
           <a class="button is-large is-text slide-left" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex-1) < 0 ?  (homeFiles.length - 1) : slideIndex-1">
             <v-icon class="icon has-text-grey-light" name="angle-left"/>
@@ -38,14 +38,17 @@
           <div v-if="slideFile && slideFile.fileType == 'YouTube'" class="youtube-container">
             <iframe class="youtube" :src="slideFile.fullUrl" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
           </div>
+
+          <div v-if="!slideFile" class="welcome-block-container">
+            <div class="welcome-block" v-if="welcomeBlock">
+              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" :textColor="'white!important'" @blockChanged="welcomeBlockChanged"></block>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="container my-page">
-      <div class="welcome-block" v-if="welcomeBlock">
-        <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
-      </div>
+    <div class="container">
       <div class="schedule-blocks">
         <h5 class="title is-5">最近的服侍安排：</h5>
         <div class="columns is-multiline">
@@ -85,21 +88,26 @@ export default {
       return this.$store.state.ui.windowWidth
     },
     slideHeight () {
-      return this.windowWidth > 600 ? 600 : 300
+      return 640
     },
     angleTop () {
-      return this.windowWidth > 600 ? 280 : 130
+      return 300
+    },
+    slidePadding () {
+      return this.windowWidth > 600 ? 20 : 10
     },
     slideFile () {
       if(this.slideIndex >= 0 && this.slideIndex < this.homeFiles.length){
         var file = this.homeFiles[this.slideIndex]
-        var fullUrl = file.url.startsWith('/') ? (xHTTPx + '/cccl_files' + file.url) : file.url
-        var iframeSource = "https://docs.google.com/gview?url=" + fullUrl + "&embedded=true"
-        return {
-          name: file.name,
-          fileType: file.fileType,
-          fullUrl: fullUrl,
-          iframeSource: iframeSource
+        if(file){
+          var fullUrl = file.url.startsWith('/') ? (xHTTPx + '/cccl_files' + file.url) : file.url
+          var iframeSource = "https://docs.google.com/gview?url=" + fullUrl + "&embedded=true"
+          return {
+            name: file.name,
+            fileType: file.fileType,
+            fullUrl: fullUrl,
+            iframeSource: iframeSource
+          }
         }
       }
     },
@@ -144,6 +152,7 @@ export default {
         this.homeFiles = response.body.sort(function(a, b){
           return a.info - b.info
         })
+        this.homeFiles.unshift(null)
       })
     },
     mediaLoaded () {
@@ -187,8 +196,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 
+.my-back {
+  background-image: url("/static/Starry Sky 3.jpg");
+  background-color: #cccccc;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+}
+
+.slides-container:hover {
+  .slide-left {
+    display: block;
+  }
+
+  .slide-right {
+    display: block;
+  }
+}
+
 .slides-container {
-  margin-top: 3px;
   width: 100%;
   position: relative;
 
@@ -198,6 +224,7 @@ export default {
     top: 260px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0);
+    display: none;
   }
 
   .slide-right {
@@ -207,6 +234,7 @@ export default {
     right: 0px;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0);
+    display: none;
   }
 
   .image-container {
@@ -255,9 +283,7 @@ export default {
   }
 
   .youtube-container {
-    height: 100%;
-    position: relative;
-    padding-top: 56.25%;
+    width: 100%;
 
     .youtube {
       position: absolute;
@@ -266,6 +292,24 @@ export default {
       width:100%;
       height:100%;
       border-radius: 5px;
+    }
+  }
+
+  .welcome-block-container{
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .welcome-block {
+      width: 95%;
+      max-width: 600px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 5px;
+      padding: 20px;
+      background-color: rgba(255,255,255,0.2);
     }
   }
 }
@@ -280,15 +324,8 @@ export default {
   width: auto;
 }
 
-.welcome-block {
-  margin-top: 50px;
-  margin-bottom: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 .schedule-blocks {
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 50px;
   padding-left: 10px;
   padding-right: 10px;

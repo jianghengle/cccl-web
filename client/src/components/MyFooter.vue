@@ -2,10 +2,10 @@
   <div>
     <footer class="footer my-footer">
       <div class="container">
-        <div class="content has-text-centered">
+        <div class="content has-text-centered footer-text">
           <p>
-            <strong>地址: </strong> 在13街和K街十字路口西北角, 聚会地点在地下一层，请由建筑后门进入。<br />
-            <strong>Address: </strong> First Baptist Church, 1340 K St. Lincoln, NE 68508
+            <span class="has-text-weight-bold">地址: </span> 在13街和K街十字路口西北角, 聚会地点在地下一层，请由建筑后门进入。<br />
+            <span class="has-text-weight-bold">Address: </span> First Baptist Church, 1340 K St. Lincoln, NE 68508
           </p>
         </div>
       </div>
@@ -27,22 +27,12 @@ export default {
 <style lang="scss" scoped>
 
 .my-footer {
-  background-color: #f7f3f9;
+  background-color: #250d3c;
+
+  .footer-text {
+    color: white;
+  }
 }
 
-.logo {
-  padding: 10px;
-}
-
-.dwfi {
-  position: relative;
-  top: 20px;
-  left: -10px;
-}
-
-.newba {
-  margin-left: 50px;
-  margin-right: 50px;
-}
 
 </style>

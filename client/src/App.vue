@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img src="static/background1.png" class="background" />
     <my-header></my-header>
     <div class="my-body">
       <router-view></router-view>
@@ -49,9 +48,14 @@ export default {
 
 <style lang="scss">
 @import "~bulma/sass/utilities/initial-variables";
-$navbar-height: 84px;
-$blue: #53098b;
+$blue: #250d3c;
+$text-strong: inherit;
 @import "~bulma";
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif, "KaiTi", "楷体", STKaiti, "华文楷体";
+  color: black;
+}
 
 .background {
   position: absolute;
@@ -63,13 +67,9 @@ $blue: #53098b;
 
 .my-body {
   min-height: 500px;
+  padding-bottom: 20px;
 }
 
-.my-page {
-  background-color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
 
 .date-picker-wrapper {
   display: inline-block;
@@ -81,5 +81,9 @@ $blue: #53098b;
   width: 120px;
   text-align: center;
   font-size: 1rem;
+}
+
+.schedule-blocks ul{
+  margin-left: 1em;
 }
 </style>

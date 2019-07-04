@@ -33,7 +33,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env,
-      'xTARGETx': JSON.stringify(target)
+      'xTARGETx': JSON.stringify(target),
+      'xHTTPx': JSON.stringify('http://cccln.org:3000')
     }),
     new UglifyJsPlugin({
       uglifyOptions: {
