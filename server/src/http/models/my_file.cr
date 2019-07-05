@@ -27,7 +27,7 @@ module MyServer
         if path.empty?
           query = Query.where(path: nil)
         else
-          query = Query.where(path: path)
+          query = Query.where("path = BINARY '#{path}'")
         end
         items = Repo.all(MyFile, query)
         return items.as(Array) unless items.nil?
@@ -183,7 +183,7 @@ module MyServer
         directory = Repo.get_by(MyFile, query).as(MyFile)
         Repo.delete(directory)
 
-        query = Query.where("path LIKE '#{path}%'")
+        query = Query.where("path LIKE BINARY '#{path}%'")
         Repo.delete_all(MyFile, query)
 
         raise "No static dir setup" unless ENV.has_key?("CCCL_STATIC")
