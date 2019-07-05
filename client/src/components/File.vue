@@ -104,7 +104,10 @@
           </nav>
         </div>
 
-        <div class="preview">
+        <div class="has-text-centered" v-if="waiting">
+          <v-icon name="spinner" class="icon is-medium fa-spin"></v-icon>
+        </div>
+        <div class="preview" v-else>
           <div v-if="file.fileType == 'Picture'">
             <img :src="fullUrl" class="picture" />
           </div>
@@ -112,13 +115,13 @@
             <iframe class="doc" :src="iframeSource"></iframe>
           </div>
           <div v-if="file.fileType == 'Audio'">
-            <audio controls>
+            <audio controls id="my-audio">
               <source :src="fullUrl" type="audio/mpeg">
               Your browser does not support the audio element.
             </audio>
           </div>
           <div v-if="file.fileType == 'Video'">
-            <video controls class="video">
+            <video controls class="video" id="my-video">
               <source :src="fullUrl" type="video/mp4">
               Your browser does not support the video element.
             </video>
@@ -144,7 +147,8 @@ export default {
       showOrder: 1,
       fileType: '',
       files: [],
-      directories: []
+      directories: [],
+      waiting: false
     }
   },
   computed: {
@@ -203,6 +207,7 @@ export default {
   },
   methods: {
     requestFile () {
+      this.waiting = true
       this.$http.get(xHTTPx + '/get_file/' + this.fileId).then(response => {
         this.file = response.body
         if(this.file.info){
@@ -214,8 +219,10 @@ export default {
         }
         this.fileType = this.file.fileType
         this.requestFiles()
+        this.waiting = false
       }, response => {
         console.log('Failed to get file!')
+        this.waiting = false
       })
     },
     requestFiles () {

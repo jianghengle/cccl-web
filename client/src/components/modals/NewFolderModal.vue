@@ -24,7 +24,7 @@
 
       </section>
       <footer class="modal-card-foot">
-        <a class="button is-link" :disabled="!name.trim()" @click="create" :is-loading="waiting">Create</a>
+        <a class="button is-link" :disabled="!name.trim()" @click="create" :class="{'is-loading': waiting}">Create</a>
         <a class="button" @click="close">Close</a>
       </footer>
     </div>
