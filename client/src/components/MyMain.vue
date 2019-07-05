@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="my-back">
+    <div class="my-back" id="slide-back" @touchstart="touchstart" @touchend="touchend">
       <div class="container" :style="{'padding': slidePadding + 'px'}">
         <div id="slides-container" class="slides-container" :style="{'height': slideHeight+'px'}">
           <a class="button is-large is-text slide-left" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex-1) < 0 ?  (homeFiles.length - 1) : slideIndex-1">
@@ -80,7 +80,10 @@ export default {
       scheduleBlocks: [],
       homeFiles: [],
       slideIndex: 0,
-      mediaRatio: null
+      mediaRatio: null,
+      startX: null,
+      startY: null,
+      startTime: null
     }
   },
   computed: {
@@ -91,7 +94,7 @@ export default {
       return 640
     },
     angleTop () {
-      return 300
+      return 285
     },
     slidePadding () {
       return this.windowWidth > 600 ? 20 : 10
@@ -156,31 +159,39 @@ export default {
       })
     },
     mediaLoaded () {
-      if(this.slideFile.fileType == 'Video'){
+      if(this.slideFile && this.slideFile.fileType == 'Video'){
         var vid = document.getElementById("my-video")
         this.mediaRatio = vid.videoHeight / vid.videoWidth
-      }else if(this.slideFile.fileType == 'Picture'){
+      }else if(this.slideFile && this.slideFile.fileType == 'Picture'){
         var img = document.getElementById('my-image')
         this.mediaRatio = img.clientHeight / img.clientWidth
         var newImg = new Image()
         var vm = this
         newImg.onload = function() {
-          var ratio = newImg.height / newImg.width
-          if(ratio >= 1){
-            if(vm.mediaRatio >= 1){
-              vm.mediaRatio = ratio
-            }else{
-              vm.mediaRatio = 1 / ratio
-            }
-          }else{
-            if(vm.mediaRatio >= 1){
-              vm.mediaRatio = 1 / ratio
-            }else{
-              vm.mediaRatio = ratio
-            }
-          }
+          vm.mediaRatio = newImg.height / newImg.width
         }
         newImg.src = this.slideFile.fullUrl
+      }
+    },
+    touchstart (e) {
+      var touchobj = e.changedTouches[0]
+      this.startX = touchobj.pageX
+      this.startY = touchobj.pageY
+      this.startTime = new Date().getTime()
+    },
+    touchend (e) {
+      var touchobj = e.changedTouches[0]
+      var distX = touchobj.pageX - this.startX
+      var distY = touchobj.pageY - this.startY
+      var elapsedTime = new Date().getTime() - this.startTime
+      if (elapsedTime <= 300){
+        if (Math.abs(distX) >= 100 && Math.abs(distY) <= 100){
+          if(distX < 0){
+            this.slideIndex = (this.slideIndex+1) % this.homeFiles.length
+          }else{
+            this.slideIndex = (this.slideIndex-1) < 0 ?  (this.homeFiles.length - 1) : (this.slideIndex-1)
+          }
+        }
       }
     }
   },

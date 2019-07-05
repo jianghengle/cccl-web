@@ -53,7 +53,6 @@ $text-strong: inherit;
 @import "~bulma";
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif, "KaiTi", "楷体", STKaiti, "华文楷体";
   color: black;
 }
 
