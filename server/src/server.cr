@@ -100,7 +100,9 @@ module MyServer
 
       serve_static({"gzip" => true, "dir_listing" => true})
 
-      Kemal.run
+      port = 3000
+      port = ENV["CCCL_PORT"].to_i if ENV.has_key?("CCCL_PORT")
+      Kemal.run port
     end
   end
 end
