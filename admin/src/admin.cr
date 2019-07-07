@@ -40,6 +40,7 @@ class Block < Crecto::Model
     field :name, String
     field :time, Time
     field :content, String
+    field :color, String
   end
 
   def self.collection_attributes
@@ -50,7 +51,8 @@ class Block < Crecto::Model
     [{:category, "enum", ["Normal", "Schedule"]},
      {:name, "string"},
      :time,
-     {:content, "text"}]
+     {:content, "text"},
+     {:color, "string"}]
   end
 
   def self.can_access(user)

@@ -41,7 +41,7 @@
 
           <div v-if="!slideFile" class="welcome-block-container">
             <div class="welcome-block" v-if="welcomeBlock">
-              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" :textColor="'white'" @blockChanged="welcomeBlockChanged"></block>
+              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
             </div>
           </div>
         </div>
@@ -194,6 +194,7 @@ export default {
     },
     welcomeBlockChanged (obj) {
       this.welcomeBlock.content = obj.content
+      this.welcomeBlock.color = obj.color
     },
     requestRecentSchedule () {
       this.$http.get(xHTTPx + '/get_recent_schedule_blocks').then(response => {

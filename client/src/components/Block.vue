@@ -2,8 +2,8 @@
   <div>
     <h4 class="title is-4" v-if="normal" :style="{'color': textColor}">
       <span>{{title}}</span>
-      <a class="button is-white is-small" :class="{'no-background': textColor}" v-if="editable && token" @click="startEditing">
-        <v-icon class="icon has-text-grey-light" :style="{'color': textColor}" name="edit"/>
+      <a class="button is-text is-small" v-if="editable && token" @click="startEditing">
+        <v-icon class="icon has-text-grey-light" name="edit"/>
       </a>
     </h4>
     <div class="table-header" v-if="!normal">
@@ -15,7 +15,7 @@
     </div>
 
     <div v-if="!inTable || blockObj.open">
-      <div class="content" v-if="!editing" :style="{'color': textColor ? textColor : 'black'}">
+      <div class="content" v-if="!editing" :style="{'color': textColor}">
         <vue-markdown :source="content"></vue-markdown>
       </div>
       <div v-else>
@@ -34,6 +34,18 @@
         <div class="field" v-if="!normal">
           <div class="control">
             <input class="input" type="text" placeholder="Event name" v-model="name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <span class="select">
+              <select v-model="color">
+                <option v-for="option in colorOptions" v-bind:value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </span>
           </div>
         </div>
 
@@ -84,7 +96,7 @@ export default {
     VueMarkdown,
     Datepicker
   },
-  props: ['blockObj', 'editable', 'inTable', 'textColor'],
+  props: ['blockObj', 'editable', 'inTable'],
   data () {
     return {
       waiting: false,
@@ -92,6 +104,16 @@ export default {
       content: '',
       date: null,
       name: null,
+      color: '',
+      colorOptions: [
+        {label: 'Black', value: 'black'},
+        {label: 'White', value: 'white'},
+        {label: 'Purple', value: '#250d3c'},
+        {label: 'Blue', value: '#055C9D'},
+        {label: 'Green', value: '#116530'},
+        {label: 'Gold', value: '#ebb22f'},
+        {label: 'Red', value: '#DB1F48'},
+      ]
     }
   },
   computed: {
@@ -110,6 +132,12 @@ export default {
       return this.content != this.blockObj.content
         || this.date.getTime() != this.blockObj.time * 1000
         || this.name != this.blockObj.name
+        || this.color != this.blockObj.color
+    },
+    textColor () {
+      if(this.blockObj.color)
+        return this.blockObj.color
+      return 'black'
     }
   },
   methods: {
@@ -125,6 +153,7 @@ export default {
       this.content = this.blockObj.content
       this.date = new Date(this.blockObj.time * 1000)
       this.name = this.blockObj.name
+      this.color = this.blockObj.color
       this.editing = false
     },
     update () {
@@ -132,7 +161,8 @@ export default {
         id: this.blockObj.id,
         name: this.name,
         content: this.content,
-        time: Math.round(this.date.getTime() / 1000)
+        time: Math.round(this.date.getTime() / 1000),
+        color: this.color
       }
       this.waiting = true
       this.$http.post(xHTTPx + '/update_block', message).then(response => {
@@ -182,6 +212,7 @@ export default {
     this.content = this.blockObj.content
     this.date = new Date(this.blockObj.time * 1000)
     this.name = this.blockObj.name
+    this.color = this.blockObj.color
   },
 }
 </script>
@@ -199,14 +230,6 @@ export default {
 
 .button-field {
   margin-bottom: 10px;
-}
-
-.no-background {
-  background-color: transparent;
-}
-
-.no-background:hover{
-  background-color: transparent;
 }
 
 

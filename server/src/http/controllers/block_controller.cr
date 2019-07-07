@@ -37,8 +37,9 @@ module MyServer
           name = get_param!(ctx, "name")
           time = get_param!(ctx, "time").to_i
           content = get_param!(ctx, "content")
+          color = get_param!(ctx, "color")
 
-          Block.update(id, name, time, content)
+          Block.update(id, name, time, content, color)
           {ok: true}.to_json
         rescue ex : InsufficientParameters
           error(ctx, "Not all required parameters were present")
@@ -69,8 +70,9 @@ module MyServer
           name = get_param!(ctx, "name")
           time = get_param!(ctx, "time").to_i
           content = get_param!(ctx, "content")
+          color = get_param!(ctx, "color")
 
-          block = Block.create("Schedule", name, time, content)
+          block = Block.create("Schedule", name, time, content, color)
           block.to_json
         rescue ex : InsufficientParameters
           error(ctx, "Not all required parameters were present")

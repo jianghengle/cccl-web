@@ -52,10 +52,6 @@ $blue: #250d3c;
 $text-strong: inherit;
 @import "~bulma";
 
-#app {
-  color: black;
-}
-
 .background {
   position: absolute;
   top: 0px;

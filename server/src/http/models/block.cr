@@ -6,6 +6,7 @@ module MyServer
         field :name, String
         field :time, Time
         field :content, String
+        field :color, String
       end
 
       def to_json
@@ -15,6 +16,7 @@ module MyServer
           str << "\"category\":" << @category.to_json << ","
           str << "\"name\":" << @name.to_json << ","
           str << "\"time\":" << @time.as(Time).to_unix << ","
+          str << "\"color\":" << @color.to_json << ","
           str << "\"content\":" << @content.to_json
           str << "}"
         end
@@ -46,13 +48,14 @@ module MyServer
         end
       end
 
-      def self.update(id, name, time, content)
+      def self.update(id, name, time, content, color)
         block = Repo.get(Block, id)
         raise "Cannot find block" if block.nil?
 
         block.name = name
         block.content = content
         block.time = Time.unix(time)
+        block.color = color
         changeset = Repo.update(block)
         raise changeset.errors.to_s unless changeset.valid?
       end
@@ -65,12 +68,13 @@ module MyServer
         raise changeset.errors.to_s unless changeset.valid?
       end
 
-      def self.create(category, name, time, content)
+      def self.create(category, name, time, content, color)
         block = Block.new
         block.category = category
         block.name = name
         block.content = content
         block.time = Time.unix(time)
+        block.color = color
 
         changeset = Repo.insert(block)
         raise changeset.errors.to_s unless changeset.valid?

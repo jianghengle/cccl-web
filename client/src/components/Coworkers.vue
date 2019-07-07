@@ -43,6 +43,18 @@
 
           <div class="field">
             <div class="control">
+              <span class="select">
+                <select v-model="newColor">
+                  <option v-for="option in colorOptions" v-bind:value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
               <textarea class="textarea" placeholder="Coworker arrangement" v-model="newContent"></textarea>
             </div>
           </div>
@@ -90,6 +102,16 @@ export default {
       newDate: new Date(),
       newName: '',
       newContent: '',
+      newColor: 'black',
+      colorOptions: [
+        {label: 'Black', value: 'black'},
+        {label: 'White', value: 'white'},
+        {label: 'Purple', value: '#250d3c'},
+        {label: 'Blue', value: '#055C9D'},
+        {label: 'Green', value: '#116530'},
+        {label: 'Gold', value: '#ebb22f'},
+        {label: 'Red', value: '#DB1F48'},
+      ],
       newSchedule: false,
       waiting: false,
       error: ''
@@ -120,7 +142,8 @@ export default {
       var message = {
         name: this.newName,
         time: Math.round(this.newDate.getTime() / 1000),
-        content: this.newContent
+        content: this.newContent,
+        color: this.newColor
       }
       this.waiting = true
       this.$http.post(xHTTPx + '/add_schedule_block', message).then(response => {
@@ -161,6 +184,7 @@ export default {
           s.name = obj.name
           s.time = obj.time
           s.content = obj.content
+          s.color = obj.color
         }
       }
       this.sortSchedule()
