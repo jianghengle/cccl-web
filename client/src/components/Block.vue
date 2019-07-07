@@ -7,7 +7,7 @@
       </a>
     </h4>
     <div class="table-header" v-if="!normal">
-      <span><strong>{{title}}</strong></span>
+      <span :style="{'color': textColor}"><strong>{{title}}</strong></span>
       &nbsp;
       <a class="button is-white is-small" v-if="editable && token && blockObj.open" @click="startEditing">
         <v-icon class="icon has-text-grey-light" name="edit"/>

@@ -47,7 +47,7 @@
               <th>#</th>
               <th class="has-text-centered">Type</th>
               <th>Name</th>
-              <th>Slide</th>
+              <th>Index</th>
             </tr>
           </thead>
           <tbody>

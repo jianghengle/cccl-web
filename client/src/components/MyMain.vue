@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="my-back" id="slide-back" @touchstart="touchstart" @touchend="touchend">
+    <div class="my-back" id="slide-back" @touchstart="touchstart" @touchend="touchend" :style="{'background-image': backUrl}">
       <div class="container" :style="{'padding': slidePadding + 'px'}">
         <div id="slides-container" class="slides-container" :style="{'height': slideHeight+'px'}">
-          <a class="button is-large is-text slide-left" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex-1) < 0 ?  (homeFiles.length - 1) : slideIndex-1">
+          <a class="button is-large is-text slide-left" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex-1) < 0 ?  (slideFiles.length - 1) : slideIndex-1">
             <v-icon class="icon has-text-grey-light" name="angle-left"/>
           </a>
-          <a class="button is-large is-text slide-right" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex+1) % homeFiles.length">
+          <a class="button is-large is-text slide-right" :style="{'top': angleTop+'px'}" @click="slideIndex = (slideIndex+1) % slideFiles.length">
             <v-icon class="icon has-text-grey-light" name="angle-right"/>
           </a>
 
@@ -41,12 +41,26 @@
 
           <div v-if="!slideFile" class="welcome-block-container">
             <div class="welcome-block" v-if="welcomeBlock">
-              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" :textColor="'white!important'" @blockChanged="welcomeBlockChanged"></block>
+              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" :textColor="'white'" @blockChanged="welcomeBlockChanged"></block>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <section class="hero" v-for="f in otherFiles">
+      <img v-if="f.fileType == 'Picture'" :src="f.fullUrl" class="full-width" />
+      <iframe v-if="f.fileType == 'Document'" :src="f.iframeSource" :style="{'width': '100%', 'height': windowWidth*0.75 + 'px'}"></iframe>
+      <audio v-if="f.fileType == 'Audio'" controls class="full-width">
+        <source :src="f.fullUrl" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <video v-if="f.fileType == 'Video'" controls class="full-width">
+        <source :src="f.fullUrl" type="video/mp4">
+        Your browser does not support the video element.
+      </video>
+      <iframe v-if="f.fileType == 'YouTube'" :src="f.fullUrl" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen :style="{'width': '100%', 'height': windowWidth*0.75 + 'px'}"></iframe>
+    </section>
 
     <div class="container">
       <div class="schedule-blocks">
@@ -83,7 +97,7 @@ export default {
       mediaRatio: null,
       startX: null,
       startY: null,
-      startTime: null
+      startTime: null,
     }
   },
   computed: {
@@ -99,9 +113,19 @@ export default {
     slidePadding () {
       return this.windowWidth > 600 ? 20 : 10
     },
+    slideFiles () {
+      var files = this.homeFiles.filter(function(f){
+        return parseInt(f.info) > 0
+      })
+      files.sort(function(a, b){
+        return a.info - b.info
+      })
+      files.unshift(null)
+      return files
+    },
     slideFile () {
-      if(this.slideIndex >= 0 && this.slideIndex < this.homeFiles.length){
-        var file = this.homeFiles[this.slideIndex]
+      if(this.slideIndex >= 0 && this.slideIndex < this.slideFiles.length){
+        var file = this.slideFiles[this.slideIndex]
         if(file){
           var fullUrl = file.url.startsWith('/') ? (xHTTPx + '/cccl_files' + file.url) : file.url
           var iframeSource = "https://docs.google.com/gview?url=" + fullUrl + "&embedded=true"
@@ -119,6 +143,34 @@ export default {
         var h = this.slideWidth * this.mediaRatio
         return h < this.slideHeight
       }
+    },
+    backUrl () {
+      for(var i=0;i<this.homeFiles.length;i++){
+        var f = this.homeFiles[i]
+        if(f && parseInt(f.info) === 0 && f.fileType == 'Picture'){
+          var fullUrl = f.url.startsWith('/') ? (xHTTPx + '/cccl_files' + f.url) : f.url
+          return 'url("' + fullUrl + '")'
+        }
+      }
+      return 'url("/static/Starry Sky 3.jpg")'
+    },
+    otherFiles () {
+      var files = this.homeFiles.filter(function(f){
+        return parseInt(f.info) < 0
+      })
+      files.sort(function(a, b){
+        return b.info - a.info
+      })
+      return files.map(function(f){
+        var fullUrl = f.url.startsWith('/') ? (xHTTPx + '/cccl_files' + f.url) : f.url
+        var iframeSource = "https://docs.google.com/gview?url=" + fullUrl + "&embedded=true"
+        return {
+          name: f.name,
+          fileType: f.fileType,
+          fullUrl: fullUrl,
+          iframeSource: iframeSource
+        }
+      })
     }
   },
   watch: {
@@ -152,10 +204,7 @@ export default {
     },
     requestHomeFiles () {
       this.$http.get(xHTTPx + '/get_home_files').then(response => {
-        this.homeFiles = response.body.sort(function(a, b){
-          return a.info - b.info
-        })
-        this.homeFiles.unshift(null)
+        this.homeFiles = response.body
       })
     },
     mediaLoaded () {
@@ -187,9 +236,9 @@ export default {
       if (elapsedTime <= 300){
         if (Math.abs(distX) >= 100 && Math.abs(distY) <= 100){
           if(distX < 0){
-            this.slideIndex = (this.slideIndex+1) % this.homeFiles.length
+            this.slideIndex = (this.slideIndex+1) % this.slideFiles.length
           }else{
-            this.slideIndex = (this.slideIndex-1) < 0 ?  (this.homeFiles.length - 1) : (this.slideIndex-1)
+            this.slideIndex = (this.slideIndex-1) < 0 ?  (this.slideFiles.length - 1) : (this.slideIndex-1)
           }
         }
       }
@@ -208,8 +257,7 @@ export default {
 <style lang="scss" scoped>
 
 .my-back {
-  background-image: url("/static/Starry Sky 3.jpg");
-  background-color: #cccccc;
+  background-color: black;
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-size: cover;
@@ -333,6 +381,10 @@ export default {
 .fullHeight {
   height: 100%;
   width: auto;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .schedule-blocks {

@@ -65,7 +65,7 @@
             </span>
           </p>
           <p class="control file-info" v-if="showOnHome == 'On Home Page'">
-            <input class="input" type="number" placeholder="Order" v-model.number="showOrder" :disabled="!token">
+            <input class="input" type="number" placeholder="0, +Index, -index" v-model.number="showOrder" :disabled="!token">
           </p>
           <p class="control file-info" v-if="changed">
             <a class="button is-link" @click="update">
