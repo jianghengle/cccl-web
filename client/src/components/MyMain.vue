@@ -363,6 +363,8 @@ export default {
     .welcome-block {
       width: 95%;
       max-width: 600px;
+      max-height: 100%;
+      overflow: auto;
       left: 50%;
       position: absolute;
       top: 50%;
