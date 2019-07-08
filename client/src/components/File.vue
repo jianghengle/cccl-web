@@ -38,12 +38,6 @@
       </div>
 
       <div>
-        <div class="field">
-          <div class="control">
-            <a :href="fullUrl" target="_blank">{{fullUrl}}</a>
-          </div>
-        </div>
-
         <div class="field" :class="{'is-grouped': windowWidth > 640}">
           <p class="control file-info">
             <span class="select">
@@ -131,6 +125,12 @@
           </div>
         </div>
 
+        <div class="field">
+          <div class="control">
+            <a :href="fullUrl" target="_blank">{{fullUrlText}}</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -164,6 +164,12 @@ export default {
     fullUrl () {
       if(this.file.url.startsWith('/')){
         return xHTTPx + '/cccl_files' + this.file.url
+      }
+      return this.file.url
+    },
+    fullUrlText () {
+      if(this.file.url.startsWith('/')){
+        return xHTTPx + '/cccl_files' + encodeURIComponent(this.file.url)
       }
       return this.file.url
     },
