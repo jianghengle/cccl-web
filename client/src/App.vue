@@ -61,7 +61,7 @@ $text-strong: inherit;
 }
 
 .my-body {
-  min-height: 500px;
+  min-height: 640px;
   padding-bottom: 20px;
 }
 
