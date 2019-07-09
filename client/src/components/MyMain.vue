@@ -63,6 +63,16 @@
     </section>
 
     <div class="container">
+      <div class="blog-blocks">
+        <h5 class="title is-5">最新动态：</h5>
+        <div v-for="(blog, i) in blogs" class="blog-block" :key="blog.id" @click="openBlog(blog)">
+          <h5 class="title is-5 blog-title">
+            <span>{{blog.name}}</span>
+          </h5>
+          <div class="blog-content" v-html="blog.content"></div>
+          <hr />
+        </div>
+      </div>
       <div class="schedule-blocks">
         <h5 class="title is-5">最近的服侍安排：</h5>
         <div class="columns is-multiline">
@@ -93,6 +103,7 @@ export default {
       welcomeBlock: null,
       scheduleBlocks: [],
       homeFiles: [],
+      blogs: [],
       slideIndex: 0,
       mediaRatio: null,
       startX: null,
@@ -208,6 +219,15 @@ export default {
         this.homeFiles = response.body
       })
     },
+    requestBlogs () {
+      this.$http.get(xHTTPx + '/get_blog_blocks').then(response => {
+        var blogs = response.body
+        blogs.sort(function(a, b){
+          return b.time - a.time
+        })
+        this.blogs = blogs.slice(0, 3)
+      })
+    },
     mediaLoaded () {
       if(this.slideFile && this.slideFile.fileType == 'Video'){
         var vid = document.getElementById("my-video")
@@ -243,6 +263,9 @@ export default {
           }
         }
       }
+    },
+    openBlog (blog) {
+      this.$router.push('/blog/' + blog.id)
     }
   },
   mounted () {
@@ -250,6 +273,7 @@ export default {
     this.requestHomeFiles()
     this.requestWelcomeBlock()
     this.requestRecentSchedule()
+    this.requestBlogs()
   },
 }
 </script>
@@ -388,6 +412,28 @@ export default {
 
 .full-width {
   width: 100%;
+}
+
+.blog-blocks {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.blog-block {
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.blog-title {
+  margin-bottom: 10px;
+}
+
+.blog-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .schedule-blocks {

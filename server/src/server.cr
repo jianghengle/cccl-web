@@ -50,12 +50,24 @@ module MyServer
         HttpAPI::BlockController.add_schedule_block(env)
       end
 
+      post "/add_blog_block" do |env|
+        HttpAPI::BlockController.add_blog_block(env)
+      end
+
       get "/get_schedule_blocks" do |env|
         HttpAPI::BlockController.get_schedule_blocks(env)
       end
 
+      get "/get_blog_blocks" do |env|
+        HttpAPI::BlockController.get_blog_blocks(env)
+      end
+
       get "/get_recent_schedule_blocks" do |env|
         HttpAPI::BlockController.get_recent_schedule_blocks(env)
+      end
+
+      get "/get_block/:id" do |env|
+        HttpAPI::BlockController.get_block(env)
       end
 
       post "/get_files" do |env|

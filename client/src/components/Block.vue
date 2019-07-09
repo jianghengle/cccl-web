@@ -1,12 +1,18 @@
 <template>
   <div>
-    <h4 class="title is-4" v-if="normal" :style="{'color': textColor}">
+    <h4 class="title is-4" v-if="category != 'Schedule'" :style="{'color': textColor}">
+      <span v-if="category == 'Blog'">
+        <a class="button back-button" @click="$router.go(-1)">
+          <v-icon name="angle-left"/>
+        </a>&nbsp;
+      </span>
       <span>{{title}}</span>
+      <span class="date-label" v-if="category == 'Blog'">{{dateLabel}}</span>
       <a class="button is-text is-small" v-if="editable && token" @click="startEditing">
         <v-icon class="icon has-text-grey-light" name="edit"/>
       </a>
     </h4>
-    <div class="table-header" v-if="!normal">
+    <div class="table-header" v-if="category == 'Schedule'">
       <span :style="{'color': textColor}"><strong>{{title}}</strong></span>
       &nbsp;
       <a class="button is-white is-small" v-if="editable && token && blockObj.open" @click="startEditing">
@@ -19,7 +25,7 @@
         <vue-markdown :source="content"></vue-markdown>
       </div>
       <div v-else>
-        <div class="field datepicker-field" v-if="!normal">
+        <div class="field datepicker-field" v-if="category == 'Schedule'">
           <div class="control">
             <datepicker
               wrapper-class="date-picker-wrapper"
@@ -31,9 +37,9 @@
           </div>
         </div>
 
-        <div class="field" v-if="!normal">
+        <div class="field" v-if="category != 'Normal'">
           <div class="control">
-            <input class="input" type="text" placeholder="Event name" v-model="name">
+            <input class="input" type="text" placeholder="Name" v-model="name">
           </div>
         </div>
 
@@ -59,7 +65,7 @@
           <div class="control">
             <button class="button is-link" :class="{'is-loading': waiting}" :disabled="!changed" @click="update">Update</button>
           </div>
-          <div class="control" v-if="!normal">
+          <div class="control" v-if="category != 'Normal'">
             <button class="button is-danger" :class="{'is-loading': waiting}" @click="deleteBlock">Delete</button>
           </div>
           <div class="control">
@@ -120,13 +126,16 @@ export default {
     token () {
       return this.$store.state.user.token
     },
-    normal () {
-      return this.blockObj.category == 'Normal'
+    category () {
+      return this.blockObj.category
     },
     title () {
-      if(this.normal)
+      if(this.category != 'Schedule')
         return this.name
       return DateFormat(this.date, 'yyyy-mm-dd ddd') + ': ' +  this.name
+    },
+    dateLabel () {
+      return DateFormat(this.date, 'mmmm d, yyyy')
     },
     changed () {
       return this.content != this.blockObj.content
@@ -161,8 +170,8 @@ export default {
         id: this.blockObj.id,
         name: this.name,
         content: this.content,
-        time: Math.round(this.date.getTime() / 1000),
-        color: this.color
+        time: Math.round((this.category == 'Blog' ? Date.now() : this.date.getTime()) / 1000),
+        color: this.color,
       }
       this.waiting = true
       this.$http.post(xHTTPx + '/update_block', message).then(response => {
@@ -171,6 +180,7 @@ export default {
         this.editing = false
         if(resp.ok){
           this.$emit('blockChanged', message)
+          this.date = new Date(message.time * 1000)
         }else{
           this.cancelEditing()
         }
@@ -184,8 +194,8 @@ export default {
     },
     deleteBlock () {
       var confirm = {
-        title: 'Delete Event',
-        message: 'Are you sure to delete this event?',
+        title: 'Delete',
+        message: 'Are you sure to delete it?',
         button: 'Yes, I am sure.',
         callback: {
           context: this,
@@ -232,5 +242,14 @@ export default {
   margin-bottom: 10px;
 }
 
+.date-label {
+  font-size: 16px;
+  color: hsl(0, 0%, 48%);
+}
+
+.back-button {
+  position: relative;
+  top: -5px;
+}
 
 </style>

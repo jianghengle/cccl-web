@@ -18,6 +18,9 @@
             <router-link class="navbar-item" :to="'/about'">
               关于我们 About Us
             </router-link>
+            <router-link class="navbar-item" :to="'/blogs'">
+              动态 Blogs
+            </router-link>
             <router-link class="navbar-item" :to="'/coworkers'">
               同工 Coworkers
             </router-link>

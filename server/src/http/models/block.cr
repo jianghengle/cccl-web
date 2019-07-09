@@ -28,8 +28,21 @@ module MyServer
         block
       end
 
+      def self.get(id)
+        block = Repo.get(Block, id)
+        raise "cannot find block" if block.nil?
+        block.as(Block)
+      end
+
       def self.get_schedule_blocks
         query = Query.where(category: "Schedule")
+        blocks = Repo.all(Block, query)
+        return blocks.as(Array) unless blocks.nil?
+        [] of Block
+      end
+
+      def self.get_blog_blocks
+        query = Query.where(category: "Blog")
         blocks = Repo.all(Block, query)
         return blocks.as(Array) unless blocks.nil?
         [] of Block

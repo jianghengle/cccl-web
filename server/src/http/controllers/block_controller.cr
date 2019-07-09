@@ -29,6 +29,18 @@ module MyServer
         end
       end
 
+      def get_block(ctx)
+        begin
+          id = get_param!(ctx, "id").to_i
+          block = Block.get(id)
+          block.to_json
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
       def update_block(ctx)
         begin
           user = verify_token(ctx)
@@ -84,6 +96,35 @@ module MyServer
       def get_recent_schedule_blocks(ctx)
         begin
           blocks = Block.get_recent_schedule_blocks
+          "[" + (blocks.join(", ") { |i| i.to_json }) + "]"
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
+      def add_blog_block(ctx)
+        begin
+          user = verify_token(ctx)
+
+          name = get_param!(ctx, "name")
+          time = get_param!(ctx, "time").to_i
+          content = get_param!(ctx, "content")
+          color = get_param!(ctx, "color")
+
+          block = Block.create("Blog", name, time, content, color)
+          block.to_json
+        rescue ex : InsufficientParameters
+          error(ctx, "Not all required parameters were present")
+        rescue e : Exception
+          error(ctx, e.message.to_s)
+        end
+      end
+
+      def get_blog_blocks(ctx)
+        begin
+          blocks = Block.get_blog_blocks
           "[" + (blocks.join(", ") { |i| i.to_json }) + "]"
         rescue ex : InsufficientParameters
           error(ctx, "Not all required parameters were present")

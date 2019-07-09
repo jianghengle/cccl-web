@@ -12,6 +12,10 @@
               关于我们 About Us
             </router-link>
             &nbsp;| &nbsp;
+            <router-link class="my-link" :to="'/blogs'">
+              动态 Blogs
+            </router-link>
+            &nbsp;| &nbsp;
             <router-link class="my-link" :to="'/coworkers'">
               同工 Coworkers
             </router-link>

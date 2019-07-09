@@ -48,7 +48,7 @@ class Block < Crecto::Model
   end
 
   def self.form_attributes
-    [{:category, "enum", ["Normal", "Schedule"]},
+    [{:category, "enum", ["Normal", "Schedule", "Blog"]},
      {:name, "string"},
      :time,
      {:content, "text"},
