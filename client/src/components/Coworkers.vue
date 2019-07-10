@@ -57,6 +57,12 @@
             <div class="control">
               <textarea class="textarea" placeholder="Coworker arrangement" v-model="newContent"></textarea>
             </div>
+            <p class="help is-info">
+              <a class="button is-small is-white" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">
+                <span class="icon"><v-icon name="brands/markdown"/></span>
+                <span>Markdown Help</span>
+              </a>
+            </p>
           </div>
 
           <div v-if="error" class="notification is-danger">

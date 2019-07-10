@@ -60,6 +60,7 @@
           </p>
           <p class="control file-info" v-if="showOnHome == 'On Home Page'">
             <input class="input" type="number" placeholder="0, +Index, -index" v-model.number="showOrder" :disabled="!token">
+            <span class="help is-link index-help">0: background picture; +index: slide files; -index: following files</span>
           </p>
           <p class="control file-info" v-if="changed">
             <a class="button is-link" @click="update">
@@ -67,6 +68,7 @@
             </a>
           </p>
         </div>
+
 
         <div v-if="files.length">
           <nav class="pagination" role="navigation" aria-label="pagination">
@@ -374,6 +376,10 @@ export default {
   margin-bottom: 10px;
 
   input {
+    max-width: 200px;
+  }
+
+  .index-help {
     max-width: 200px;
   }
 }

@@ -32,6 +32,12 @@
         <div class="control">
           <textarea id="new-blog-content" class="textarea" placeholder="Blog content" v-model="newContent" @change="newBlogContentChanged"></textarea>
         </div>
+        <p class="help is-info">
+          <a class="button is-small is-white" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">
+            <span class="icon"><v-icon name="brands/markdown"/></span>
+            <span>Markdown Help</span>
+          </a>
+        </p>
       </div>
 
       <div v-if="error" class="notification is-danger">
