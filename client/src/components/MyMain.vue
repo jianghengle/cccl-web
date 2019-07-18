@@ -388,7 +388,7 @@ export default {
       width: 95%;
       max-width: 600px;
       max-height: 100%;
-      overflow: auto;
+      overflow: hidden;
       left: 50%;
       position: absolute;
       top: 50%;
