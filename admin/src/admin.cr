@@ -48,7 +48,7 @@ class Block < Crecto::Model
   end
 
   def self.form_attributes
-    [{:category, "enum", ["Normal", "Schedule", "Blog"]},
+    [{:category, "enum", ["Normal", "Schedule", "Blog", "Page"]},
      {:name, "string"},
      :time,
      {:content, "text"},
@@ -76,6 +76,33 @@ class MyFile < Crecto::Model
   end
 end
 
+class Menu < Crecto::Model
+  schema "menus" do
+    field :name, String
+    field :parent_id, Int32
+    field :menu_index, Int32
+    field :link, String
+    field :block_id, Int32
+  end
+
+  def self.collection_attributes
+    return [:name, :parent_id, :menu_index, :created_at, :updated_at]
+  end
+
+  def self.form_attributes
+    [{:name, "string"},
+     :parent_id,
+     :menu_index,
+     {:link, "string"},
+     :block_id]
+  end
+
+  def self.can_access(user)
+    return false unless user.is_a? User
+    user.role.to_s == "Admin"
+  end
+end
+
 CrectoAdmin.config do |config|
   config.auth_enabled = true
   config.auth = CrectoAdmin::DatabaseAuth
@@ -91,6 +118,7 @@ init_admin()
 admin_resource(User, Repo)
 admin_resource(Block, Repo)
 admin_resource(MyFile, Repo)
+admin_resource(Menu, Repo)
 
 Kemal::Session.config do |config|
   config.secret = "sTHxjX3R"

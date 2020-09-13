@@ -22,7 +22,8 @@ module MyServer
       def self.get_user(username : String, password : String)
         user = Repo.get_by(User, username: username)
         raise "Cannot find user" if user.nil?
-        raise "Cannot verify password" unless Crypto::Bcrypt::Password.new(user.encrypted_password.not_nil!) == password
+        password_check = Crypto::Bcrypt::Password.new(user.encrypted_password.not_nil!)
+        raise "Cannot verify password" unless password_check.verify password
         user
       end
 

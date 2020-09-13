@@ -6,10 +6,12 @@
     </div>
     <my-footer></my-footer>
 
-    <confirm-modal></confirm-modal>
     <login-modal></login-modal>
     <new-file-modal></new-file-modal>
     <new-folder-modal></new-folder-modal>
+    <add-menu-modal></add-menu-modal>
+    <edit-menu-modal></edit-menu-modal>
+    <confirm-modal></confirm-modal>
   </div>
 </template>
 
@@ -20,6 +22,8 @@ import ConfirmModal from './components/modals/ConfirmModal'
 import LoginModal from './components/modals/LoginModal'
 import NewFileModal from './components/modals/NewFileModal'
 import NewFolderModal from './components/modals/NewFolderModal'
+import AddMenuModal from './components/modals/AddMenuModal'
+import EditMenuModal from './components/modals/EditMenuModal'
 
 export default {
   name: 'App',
@@ -29,7 +33,9 @@ export default {
     ConfirmModal,
     LoginModal,
     NewFileModal,
-    NewFolderModal
+    NewFolderModal,
+    AddMenuModal,
+    EditMenuModal
   },
   methods: {
     handleResize () {
@@ -48,7 +54,7 @@ export default {
 
 <style lang="scss">
 @import "~bulma/sass/utilities/initial-variables";
-$blue: #250d3c;
+$blue: #24292e;
 $text-strong: inherit;
 @import "~bulma";
 

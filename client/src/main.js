@@ -27,6 +27,8 @@ import 'vue-awesome/icons/file-audio'
 import 'vue-awesome/icons/file-video'
 import 'vue-awesome/icons/brands/youtube'
 import 'vue-awesome/icons/brands/markdown'
+import 'vue-awesome/icons/ellipsis-v'
+import 'vue-awesome/icons/user'
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('v-icon', Icon)
 

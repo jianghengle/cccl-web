@@ -8,17 +8,19 @@ targets:
   server:
     main: src/server.cr
 
-crystal: 0.27.0
+crystal: 0.35.1
 
 license: MIT
 
 dependencies:
   crecto:
     github: Crecto/crecto
+    version: 0.11.3
 
   mysql:
     github: crystal-lang/crystal-mysql
+    version: 0.11.2
 
   kemal:
     github: kemalcr/kemal
-    version: 0.25.1
+    branch: master

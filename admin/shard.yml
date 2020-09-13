@@ -8,7 +8,7 @@ targets:
   admin:
     main: src/admin.cr
 
-crystal: 0.27.0
+crystal: 0.35.1
 
 license: MIT
 
@@ -19,9 +19,11 @@ dependencies:
 
   pg:
     github: will/crystal-pg
+    version: 0.21.1
 
   mysql:
     github: crystal-lang/crystal-mysql
+    version: 0.11.2
 
   micrate:
     github: amberframework/micrate

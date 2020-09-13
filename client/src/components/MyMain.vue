@@ -225,7 +225,7 @@ export default {
         blogs.sort(function(a, b){
           return b.time - a.time
         })
-        this.blogs = blogs.slice(0, 3)
+        this.blogs = blogs
       })
     },
     mediaLoaded () {

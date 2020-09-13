@@ -54,7 +54,7 @@ module MyServer
         return [] of Block if blocks.nil?
         blocks = blocks.as(Array)
 
-        now = Time.utc_now
+        now = Time.utc
         blocks.select do |b|
           span = b.time.as(Time) - now
           span.total_days > -0.5 && span.total_days < 7

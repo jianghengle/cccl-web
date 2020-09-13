@@ -1,5 +1,5 @@
 -- +micrate Up
-ALTER TABLE files ADD column comment VARCHAR(16) DEFAULT NULL,
+ALTER TABLE files ADD column comment VARCHAR(16) DEFAULT NULL;
 
 
 -- +micrate Down

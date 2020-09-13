@@ -71,7 +71,7 @@
           <div class="control">
             <button class="button is-link" :class="{'is-loading': waiting}" :disabled="!changed" @click="update">Update</button>
           </div>
-          <div class="control" v-if="category != 'Normal'">
+          <div class="control" v-if="category != 'Normal' && category != 'Page'">
             <button class="button is-danger" :class="{'is-loading': waiting}" @click="deleteBlock">Delete</button>
           </div>
           <div class="control">
@@ -154,6 +154,14 @@ export default {
         return this.blockObj.color
       return 'black'
     }
+  },
+  watch: {
+    blockObj: function (val) {
+      this.content = this.blockObj.content
+      this.date = new Date(this.blockObj.time * 1000)
+      this.name = this.blockObj.name
+      this.color = this.blockObj.color
+    },
   },
   methods: {
     startEditing () {

@@ -8,6 +8,7 @@ import File from '@/components/File'
 import Blogs from '@/components/Blogs'
 import NewBlog from '@/components/NewBlog'
 import Blog from '@/components/Blog'
+import Page from '@/components/Page'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export default new Router({
       path: '/blog/:id',
       name: 'Blog',
       component: Blog
+    },
+    {
+      path: '/page/:id',
+      name: 'Page',
+      component: Page
     },
   ],
   scrollBehavior (to, from, savedPosition) {

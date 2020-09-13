@@ -110,6 +110,22 @@ module MyServer
         HttpAPI::FileController.get_home_files(env)
       end
 
+      get "/get_all_menus" do |env|
+        HttpAPI::MenuController.get_all_menus(env)
+      end
+
+      post "/create_menu" do |env|
+        HttpAPI::MenuController.create_menu(env)
+      end
+
+      post "/update_menu" do |env|
+        HttpAPI::MenuController.update_menu(env)
+      end
+
+      post "/delete_menu" do |env|
+        HttpAPI::MenuController.delete_menu(env)
+      end
+
       serve_static({"gzip" => true, "dir_listing" => true})
 
       port = 3000

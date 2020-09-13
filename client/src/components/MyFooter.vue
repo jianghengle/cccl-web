@@ -93,7 +93,7 @@ export default {
 <style lang="scss" scoped>
 
 .my-footer {
-  background-color: #250d3c;
+  background-color: #24292e;
 
   .my-links {
     color: #ebb22f;

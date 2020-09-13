@@ -28,9 +28,11 @@ export default {
   methods: {
     aboutBlockChanged (obj) {
       this.aboutBlock.content = obj.content
+      this.aboutBlock.color = obj.color
     },
     contactBlockChanged (obj) {
       this.contactBlock.content = obj.content
+      this.contactBlock.color = obj.color
     }
   },
   mounted () {

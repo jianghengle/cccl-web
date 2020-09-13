@@ -1,7 +1,7 @@
 <template>
   <div class="container my-page">
-    <div class="blog-block" v-if="blog">
-      <block :blockObj="blog" :editable="true" :inTable="false" @blockChanged="blogChanged" @blockDeleted="blogDeleted"></block>
+    <div class="page-block" v-if="page">
+      <block :blockObj="page" :editable="true" :inTable="false" @blockChanged="pageChanged"></block>
     </div>
   </div>
 </template>
@@ -11,13 +11,13 @@ import Block from './Block'
 import DateFormat from 'dateformat'
 
 export default {
-  name: 'blog',
+  name: 'page',
   components: {
     Block
   },
   data () {
     return {
-      blog: null,
+      page: null,
       waiting: false,
     }
   },
@@ -31,32 +31,29 @@ export default {
   },
   watch: {
     blockId: function (val) {
-      this.requestBlog()
+      this.requestPage()
     },
   },
   methods: {
-    requestBlog () {
+    requestPage () {
       this.waiting = true
       this.$http.get(xHTTPx + '/get_block/' + this.blockId).then(response => {
-        this.blog = response.body
+        this.page = response.body
         this.waiting = false
       }, response => {
         console.log('Failed to get block!')
         this.waiting = false
       })
     },
-    blogChanged (obj) {
-      this.blog.name = obj.name
-      this.blog.time = obj.time
-      this.blog.content = obj.content
-      this.blog.color = obj.color
+    pageChanged (obj) {
+      this.page.name = obj.name
+      this.page.time = obj.time
+      this.page.content = obj.content
+      this.page.color = obj.color
     },
-    blogDeleted (obj) {
-      this.$router.replace('/blogs')
-    }
   },
   mounted () {
-    this.requestBlog()
+    this.requestPage()
   }
 }
 </script>
@@ -64,7 +61,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 
-.blog-block {
+.page-block {
   margin-top: 50px;
   margin-bottom: 50px;
   padding-left: 10px;
