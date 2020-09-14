@@ -9,9 +9,9 @@ CREATE TABLE menus(
   created_at DATETIME,
   updated_at DATETIME,
   PRIMARY KEY (id)
-);
+) CHARACTER SET = utf8;
 
 
 
 -- +micrate Down
-DROP TABLE blocks;
+DROP TABLE menus;
