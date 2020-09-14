@@ -28,7 +28,7 @@
             <div class="navbar-item has-dropdown is-hoverable" v-for="mg in otherMenus" :key="mg.parent.id">
               <a class="navbar-link" :href="mg.parent.url ? mg.parent.url : mg.parent.path">
                 <span v-if="token" @click.stop.prevent="editMenu(mg.parent, true)"><v-icon name="ellipsis-v" class="my-menu-icon"/></span>
-                <span>{{mg.parent.name}}{{mg.children.length}}</span>
+                <span>{{mg.parent.name}}</span>
               </a>
 
               <div class="navbar-dropdown" v-if="mg.children.length || token">
