@@ -108,7 +108,7 @@ export default {
     VueMarkdown,
     Datepicker
   },
-  props: ['blockObj', 'editable', 'inTable'],
+  props: ['blockObj', 'editable', 'inTable', 'maxTextareaHeight'],
   data () {
     return {
       waiting: false,
@@ -166,10 +166,19 @@ export default {
   methods: {
     startEditing () {
       this.editing = true
+      var vm = this
       this.$nextTick(function(){
         var el = document.getElementById('textarea-' + this.blockObj.id)
         el.style.height = "1px"
-        el.style.height = (25+el.scrollHeight)+"px"
+        if (vm.maxTextareaHeight) {
+          if ((25+el.scrollHeight) > vm.maxTextareaHeight) {
+            el.style.height = vm.maxTextareaHeight + 'px'
+          } else {
+            el.style.height = (25+el.scrollHeight)+"px"
+          }
+        } else {
+          el.style.height = (25+el.scrollHeight)+"px"
+        }
       })
     },
     cancelEditing () {

@@ -41,8 +41,7 @@
             </a>
           </p>
           <p>
-            <span class="has-text-weight-bold">地址: </span> 在13街和K街十字路口西北角, 聚会地点在地下一层，请由建筑北门进入。<br />
-            <span class="has-text-weight-bold">Address: </span> First Baptist Church, 1340 K St. Lincoln, NE 68508
+            <span class="has-text-weight-bold">地址 Address: </span> 1201 Benton St. Lincoln, NE 68521
           </p>
         </div>
       </div>

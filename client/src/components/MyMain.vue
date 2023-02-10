@@ -41,7 +41,7 @@
 
           <div v-if="!slideFile" class="welcome-block-container">
             <div class="welcome-block" v-if="welcomeBlock">
-              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" @blockChanged="welcomeBlockChanged"></block>
+              <block :blockObj="welcomeBlock" :editable="true" :inTable="false" :maxTextareaHeight="400" @blockChanged="welcomeBlockChanged"></block>
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@ export default {
         blogs.sort(function(a, b){
           return b.time - a.time
         })
-        this.blogs = blogs
+        this.blogs = blogs.slice(0, 20)
       })
     },
     mediaLoaded () {
@@ -386,7 +386,7 @@ export default {
 
     .welcome-block {
       width: 95%;
-      max-width: 600px;
+      max-width: 1200px;
       max-height: 100%;
       overflow: hidden;
       left: 50%;

@@ -1,64 +1,62 @@
 <template>
   <div>
     <nav class="navbar has-shadow is-link">
-      <div class="container">
-        <div class="navbar-brand">
-          <router-link class="navbar-item has-text-weight-bold" :to="'/'">
-            林肯华人基督教会 CCCL
-          </router-link>
-          <div class="navbar-burger burger app-burger" :class="{'is-active': menuActive}"
-            @click="menuActive = !menuActive">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+      <div class="navbar-brand">
+        <router-link class="navbar-item has-text-weight-bold" :to="'/'">
+          林肯华人基督教会 CCCL
+        </router-link>
+        <div class="navbar-burger burger app-burger" :class="{'is-active': menuActive}"
+          @click="menuActive = !menuActive">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-        <div class="navbar-menu" :class="{'is-active': menuActive}">
-          <div class="navbar-start">
-            <router-link class="navbar-item" :to="'/about'">
-              我们 About Us
-            </router-link>
-            <router-link class="navbar-item" :to="'/blogs'">
-              动态 Blogs
-            </router-link>
-            <router-link class="navbar-item" :to="'/coworkers'">
-              同工 Work
-            </router-link>
+      </div>
+      <div class="navbar-menu" :class="{'is-active': menuActive}">
+        <div class="navbar-start">
+          <router-link class="navbar-item" :to="'/about'">
+            我们 About Us
+          </router-link>
+          <router-link class="navbar-item" :to="'/blogs'">
+            动态 Blogs
+          </router-link>
+          <router-link class="navbar-item" :to="'/coworkers'">
+            同工 Work
+          </router-link>
 
-            <div class="navbar-item has-dropdown is-hoverable" v-for="mg in otherMenus" :key="mg.parent.id">
-              <a class="navbar-link" :href="mg.parent.url ? mg.parent.url : mg.parent.path">
-                <span v-if="token" @click.stop.prevent="editMenu(mg.parent, true)"><v-icon name="ellipsis-v" class="my-menu-icon"/></span>
-                <span>{{mg.parent.name}}</span>
+          <div class="navbar-item has-dropdown is-hoverable" v-for="mg in otherMenus" :key="mg.parent.id">
+            <a class="navbar-link" :href="mg.parent.url ? mg.parent.url : mg.parent.path">
+              <span v-if="token" @click.stop.prevent="editMenu(mg.parent, true)"><v-icon name="ellipsis-v" class="my-menu-icon"/></span>
+              <span>{{mg.parent.name}}</span>
+            </a>
+
+            <div class="navbar-dropdown" v-if="mg.children.length || token">
+              <a class="navbar-item" v-for="mt in mg.children" :href="mt.url ? mt.url : mt.path" :key="mt.id">
+                <span v-if="token" @click.stop.prevent="editMenu(mt, false)"><v-icon name="ellipsis-v" class="my-menu-icon"/></span>
+                <span>{{mt.name}}</span>
               </a>
-
-              <div class="navbar-dropdown" v-if="mg.children.length || token">
-                <a class="navbar-item" v-for="mt in mg.children" :href="mt.url ? mt.url : mt.path" :key="mt.id">
-                  <span v-if="token" @click.stop.prevent="editMenu(mt, false)"><v-icon name="ellipsis-v" class="my-menu-icon"/></span>
-                  <span>{{mt.name}}</span>
-                </a>
-                <hr class="navbar-divider" v-if="mg.children.length && token">
-                <a class="navbar-item" v-if="token" @click="addMenu(mg.parent.id)">
-                  <v-icon name="plus" class="my-menu-icon"/>&nbsp;Add
-                </a>
-              </div>
+              <hr class="navbar-divider" v-if="mg.children.length && token">
+              <a class="navbar-item" v-if="token" @click="addMenu(mg.parent.id)">
+                <v-icon name="plus" class="my-menu-icon"/>&nbsp;Add
+              </a>
             </div>
-
-            <a class="navbar-item" v-if="token" @click="addMenu(null)">
-              <v-icon name="plus" class="my-menu-icon"/>
-            </a>
           </div>
 
-          <div class="navbar-end">
-            <router-link  class="navbar-item" :to="'/files'">
-              文件 Files
-            </router-link>
-            <a class="navbar-item" v-if="!token" @click="login">
-              <v-icon name="user"/>
-            </a>
-            <a class="navbar-item" v-if="token" @click="logout">
-              <v-icon name="user"/>
-            </a>
-          </div>
+          <a class="navbar-item" v-if="token" @click="addMenu(null)">
+            <v-icon name="plus" class="my-menu-icon"/>
+          </a>
+        </div>
+
+        <div class="navbar-end">
+          <router-link  class="navbar-item" :to="'/files'">
+            文件 Files
+          </router-link>
+          <a class="navbar-item" v-if="!token" @click="login">
+            <v-icon name="user"/>
+          </a>
+          <a class="navbar-item" v-if="token" @click="logout">
+            <v-icon name="user"/>
+          </a>
         </div>
       </div>
     </nav>
